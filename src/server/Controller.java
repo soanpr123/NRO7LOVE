@@ -300,10 +300,14 @@ public class Controller {
 //                    System.out.println(_msg.reader().readByte());
 //                    System.out.println(_msg.reader().readInt());
                     byte step = _msg.reader().readByte();
+
+                    System.out.println(step);
+
                    if(step==1){
                        Lucky.gI().luckyRound(player);
                    }else {
-
+                       byte soluong=_msg.reader().readByte();
+                       System.out.println(soluong);
                        try {
                            Message  msg = new Message(129);
                            msg.writer().writeByte(1);
