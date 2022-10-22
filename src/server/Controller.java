@@ -88,6 +88,7 @@ public class Controller {
                 case 6: //buy item
                     int typeIem = _msg.reader().readByte();
                     int idItem = _msg.reader().readShort();
+                    System.out.println(idItem);
                     int quantity = 0;
                     try {
                         quantity = _msg.reader().readShort();
@@ -296,36 +297,7 @@ public class Controller {
                     Service.getInstance().bgTemp(_session, bgId);
                     break;
                 case -33:
-                case -127:
-//                    System.out.println(_msg.reader().readByte());
-//                    System.out.println(_msg.reader().readInt());
-                    byte step = _msg.reader().readByte();
 
-                    System.out.println(step);
-
-                   if(step==1){
-                       Lucky.gI().luckyRound(player);
-                   }else {
-                       byte soluong=_msg.reader().readByte();
-                       System.out.println(soluong);
-                       try {
-                           Message  msg = new Message(129);
-                           msg.writer().writeByte(1);
-                           msg.writer().writeByte(6);
-                           msg.writer().writeShort(931);
-                           msg.writer().writeShort(420);
-                           msg.writer().writeShort(421);
-                           msg.writer().writeShort(422);
-                           msg.writer().writeShort(423);
-                           msg.writer().writeShort(424);
-                           msg.writer().writeShort(425);
-                           player.sendMessage(msg);
-                           msg.cleanup();
-                       } catch (Exception e) {
-                       }
-                   }
-
-                    break;
                 case -23:
                     ChangeMap.gI().changeMapWaypoint(player);
                     break;
@@ -467,6 +439,7 @@ public class Controller {
                     break;
                 case 33:
                     npcId = _msg.reader().readShort();
+                    System.out.println(npcId);
                     MenuController.getInstance().openMenuNPC(_session, npcId, player);
                     break;
                 case 34:
@@ -522,6 +495,37 @@ public class Controller {
                     break;
                 case -16: // hồi sinh
                     Service.getInstance().hsChar(player, player.point.getHPFull(), player.point.getMPFull());
+                    break;
+                case -127:
+//                    System.out.println(_msg.reader().readByte());
+//                    System.out.println(_msg.reader().readInt());
+                    byte step = _msg.reader().readByte();
+
+                    System.out.println(step);
+
+                    if(step==1){
+                        Lucky.gI().luckyRound(player);
+                    }else {
+                        byte soluong=_msg.reader().readByte();
+                        System.out.println(soluong);
+                        try {
+                            Message  msg = new Message(129);
+                            msg.writer().writeByte(1);
+                            msg.writer().writeByte(6);
+                            msg.writer().writeShort(931);
+                            msg.writer().writeShort(420);
+                            msg.writer().writeShort(421);
+                            msg.writer().writeShort(422);
+                            msg.writer().writeShort(423);
+                            msg.writer().writeShort(424);
+                            msg.writer().writeShort(425);
+                            player.sendMessage(msg);
+                            msg.cleanup();
+                        } catch (Exception e) {
+                        }
+                    }
+
+                    break;
                 default:
 //                    Util.log("CMD: " + cmd);
                     break;

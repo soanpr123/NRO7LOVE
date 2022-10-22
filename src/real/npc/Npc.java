@@ -7,6 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import real.item.Item;
+import real.item.ItemLucky;
+import real.item.ItemShop;
 import real.map.Map;
 import real.player.Player;
 import server.DBService;
@@ -156,6 +160,7 @@ public abstract class Npc implements IAtionNpc {
     @Override
     public void openMenu(Player player) {
         try {
+
             if (mainMenu != null) {
                 mainMenu.openMenu(player);
             } else {

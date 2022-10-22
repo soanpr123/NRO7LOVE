@@ -3,6 +3,7 @@ package real.npc;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import real.func.ChangeMap;
@@ -14,6 +15,10 @@ import static real.func.SummonDragon.SHENRON_1_STAR_WISHES_1;
 import static real.func.SummonDragon.SHENRON_1_STAR_WISHES_2;
 import static real.func.SummonDragon.SHENRON_SAY;
 
+import real.item.CaiTrangData;
+import real.item.ItemData;
+import real.item.ItemLucky;
+import real.item.ItemShop;
 import real.lucky.Lucky;
 
 import real.magictree.MagicTree;
@@ -248,6 +253,32 @@ public class NpcFactory {
                         }
                     };
                     break;
+                case  RUONG_DO:
+                    npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
+                        @Override
+                        public void openMenu(Player player) {
+                            if(tempId==3){
+                                try{
+                                    Message m;
+                                    m = new Message(-35);
+                                    m.writer().writeByte(1);
+                                    player.sendMessage(m);
+                                    m.cleanup();
+                                } catch (Exception e) {
+                                }
+                            }else {
+                                super.openMenu(player);
+                            }
+
+                        }
+
+                        @Override
+                        public void confirmMenu(Player player, int select) {
+
+                        };
+                    };
+
+                    break;
                 case DAU_THAN:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
                         @Override
@@ -344,7 +375,7 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 45 ) {
-                                this.createOtherMenu(pl, 0, "Mày muốn gì ",new String[]{"Vòng quay","Đóng"});
+                                this.createOtherMenu(pl, 0, "Mày muốn gì ",new String[]{"Vòng quay","Ruong phu","Đóng"});
                             }else{
                                 super.openMenu(pl);
                             }
@@ -358,6 +389,54 @@ public class NpcFactory {
                                 switch (select) {
                                     case 0://Shop
                                         Lucky.gI().luckyRound(player);
+                                        break;
+                                    case 1:
+//                                        Message msg;
+                                        try {
+                                            List<ItemLucky> list = ItemData.itemLocky;
+                                            msg = new Message(212);
+                                            msg.writer().writeByte(4);
+                                            msg.writer().writeByte(1);
+
+
+
+
+                                                System.out.println("size list " + list.size());
+                                                msg.writer().writeUTF("Rương" +
+                                                        " Phụ");
+                                                int items = list.size();
+                                                msg.writer().writeByte(items);
+//                                            msg.writer().writeShort(1);
+                                                for (int j = 0; j < items; j++) {
+                                                    ItemLucky it = list.get(j);
+                                                    msg.writer().writeShort(it.itemTemplate.id);
+                                                    msg.writer().writeInt(it.gold);
+                                                    msg.writer().writeInt(it.gem);
+                                                    int options = it.itemOptions.size();
+//                                                    msg.writer().writeUTF("Nhận");
+                                                    msg.writer().writeByte(options);
+                                                    if (options != 0) {
+                                                        for (int k = 0; k < options; k++) {
+                                                            msg.writer().writeByte(it.itemOptions.get(k).optionId);
+                                                            msg.writer().writeShort(it.itemOptions.get(k).param);
+                                                        }
+                                                    }
+
+                                                    int isCaiTrang = it.isCaiTrang ? 1 : 0;
+                                                    msg.writer().writeByte(isCaiTrang);
+                                                    if (isCaiTrang == 1) {
+                                                        CaiTrangData.CaiTrang ct = CaiTrangData.getCaiTrangByTempID(it.itemTemplate.id);
+                                                        msg.writer().writeShort(ct.getID()[0]);
+                                                        msg.writer().writeShort(ct.getID()[1]);
+                                                        msg.writer().writeShort(ct.getID()[2]);
+                                                        msg.writer().writeShort(ct.getID()[3]);
+                                                    }
+                                                }
+
+                                            player.sendMessage(msg);
+                                            msg.cleanup();
+                                        } catch (Exception e) {
+                                        }
                                         break;
                                 }
                             }

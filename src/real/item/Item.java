@@ -14,6 +14,7 @@ public class Item {
     public String content;
 
     public int quantity;
+    public  int quantitytemp=1;
 
     public ArrayList<ItemOption> itemOptions = new ArrayList<>();
 

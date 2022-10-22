@@ -13,6 +13,7 @@ import server.io.Session;
 public class ItemData {
 
     public static List<ItemOptionTemplate> itemOptionTemplates = new ArrayList<>();
+    public static List<ItemLucky> itemLocky = new ArrayList<>();
     public static List<ItemTemplate> itemTemplates = new ArrayList<>();
 
     public static ItemOptionTemplate getItemOptionTemplate(int id) {
@@ -42,6 +43,9 @@ public class ItemData {
         Util.log("Tải item option template thành công! (" + itemOptionTemplates.size() + ")");
         Shop.gI().itemShops = (Map) ItemShopDAO.loadItemShop();
         Util.log("Tải dữ liệu cửa hàng thành công! (" + Shop.gI().itemShops.size() + ")");
+       itemLocky=ItemLuckyDAO.loadItemLucky();
+        Util.log("Tải dữ liệu Rương phụ thành công! (" + itemLocky.size() + ")");
+
     }
 
     public static void updateItem(Session session) {

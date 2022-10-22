@@ -27,6 +27,12 @@ public class ReadMessage {
 
             Util.log("type = " + type);
             switch (type) {
+                case 0:
+                    player.inventory.itemBoxToBag(index);
+                    break;
+                case 1:
+                    player.inventory.itemBagToBox(index);
+                    break;
                 case 4:
                     player.inventory.itemBagToBody(index);
                     break;
@@ -39,6 +45,7 @@ public class ReadMessage {
                 case 7:
                     player.inventory.itemPetBodyToBag(index);
                     break;
+
             }
         } catch (Exception e) {
         }

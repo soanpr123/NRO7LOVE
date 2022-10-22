@@ -70,6 +70,19 @@ public class Inventory {
         }
         return false;
     }
+    public boolean getFullBox(){
+        int  maxBox = this.itemsBox.size();
+        int curentBox = 0;
+        for(Item it : this.itemsBox){
+            if(it.id != -1){
+                curentBox += 1;
+            }
+        }
+        if(curentBox == maxBox){
+            return true;
+        }
+        return false;
+    }
     private List<Item> copyList(List<Item> items) {
         List<Item> list = new ArrayList<>();
         for (Item item : items) {
@@ -264,7 +277,7 @@ public class Inventory {
             return true;
         }
         int temp = item.template.id;
-        if (temp == 193 || temp == 402 || temp == 403 || temp == 404 || temp == 759 || temp == 361) {
+        if (temp == 193 || temp == 402 || temp == 403 || temp == 404 || temp == 759 || temp == 361||temp==13) {
             return true;
         }
         return false;
@@ -406,6 +419,7 @@ public class Inventory {
         }else{
         Item item = itemsBody.get(index);
         if (item.id != -1) {
+
             itemsBody.set(index, putItemBag(item));
             Service.getInstance().point(player);
             sendItemBags();
@@ -443,11 +457,126 @@ public class Inventory {
             Service.getInstance().showInfoPet(player);
         }
     }
-
-    public void itemBagToBox() {
-
+    public byte getIndexBoxid(final int id) {
+        for (byte i = 0; i < this.itemsBox.size(); ++i) {
+            final Item item = this.itemsBox.get(i);
+            if (item.id != -1 && item.template.id == id) {
+                System.out.println(item.template.id);
+                return i;
+            }
+        }
+        return -1;
+    }
+    public byte getBoxNull() {
+        byte num = 0;
+        for (byte i = 0; i < this.itemsBox.size(); ++i) {
+            if (this.itemsBox.get(i) == null) {
+                num++;
+            }
+        }
+        return num;
     }
 
+    protected byte getIndexBoxNotItem() {
+        for (byte i = 0; i < itemsBox.size(); ++i) {
+            final Item item = itemsBox.get(i);
+            if (item.id == -1) {
+                System.out.println(i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public byte getIndexBagNotItem() {
+        byte i;
+        Item item;
+        for (i = 0; i < itemsBag.size(); ++i) {
+            item = itemsBag.get(i);
+            if (item.id == -1) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+    public void itemBagToBox(int index) {
+        Item item = itemsBag.get(index);
+//        System.out.println(item.template.id);
+//        System.out.println("item trong bag" + itemsBag.get(index).id);
+//        for (byte i = 0; i < itemsBox.size(); ++i) {
+//            final Item item = itemsBox.get(i);
+//            System.out.println("item trong ruong =>>"+item.id);
+//
+//            if (item.id !=-1 && item.template.id == itemsBag.get(index).template.id) {
+//                System.out.println(item.template.id);
+//                return ;
+//            }
+//        }
+//        return ;
+        if (item != null) {
+            byte indexBox = getIndexBoxid(item.template.id);
+            System.out.println("indexBox====>" + indexBox);
+            System.out.println(isItemIncremental(item));
+            if (indexBox!=-1&&isItemIncremental(item)) {
+                removeItemBag(index);
+                Item item2 = itemsBox.get(indexBox);
+                item2.quantity += item.quantity;
+                System.out.println(item2.quantity);
+                this.itemsBox.set(indexBox, item2);
+
+            } else {
+                if (getFullBox()==true) {
+                    Service.getInstance().sendThongBao(player,"Rương đồ không đủ chỗ trống");
+                    return;
+                }
+                indexBox = getIndexBoxNotItem();
+                removeItemBag(index);
+                itemsBox.set(indexBox, item);
+//                item.quantity = item.quantitytemp;
+            }
+            sortItemBox();
+           sendItemBox();
+           sendItemBags();
+
+        }
+//
+        }
+    public byte getIndexBagid(int id) {
+        byte i;
+        Item item;
+        for (i = 0; i < itemsBox.size(); ++i) {
+            item = itemsBox.get(i);
+            if (item.id != -1 && item.template.id == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void itemBoxToBag(int index) {
+        Item item = itemsBox.get(index);
+        if (item != null) {
+            byte indexBag = getIndexBoxid(item.id);
+            if (indexBag != -1 &&isItemIncremental(item)) {
+                removeItemBox(index);
+                Item item2 = itemsBag.get(indexBag);
+                item2.quantity += item.quantity;
+                itemsBag.set(indexBag, item2);
+            } else {
+                if (getFullBag()) {
+                    Service.getInstance().sendThongBao(player,"Hành trang không đủ chỗ trống");
+                    return;
+                }
+                indexBag = getIndexBagNotItem();
+                removeItemBox(index);
+                itemsBag.set(indexBag, item);
+            }
+            sortItemBox();
+           sendItemBags();
+            sendItemBox();
+        }
+    }
     public void itemBoxToBag() {
 
     }
@@ -475,6 +604,9 @@ public class Inventory {
 
     public void sortItemBag() {
         sortItem(itemsBag);
+    }
+    public void sortItemBox() {
+        sortItem(itemsBox);
     }
 
     public void sortItem(List<Item> items) {
@@ -604,10 +736,30 @@ public void sendItemBags() {
     }
 
     public void sendItemBox() {
+        arrangeItems(itemsBox);
         Message msg;
         try {
             msg = new Message(-35);
+            msg.writer().writeByte(0);
+            msg.writer().writeByte(itemsBox.size());
+            for (int i = 0; i < itemsBox.size(); i++) {
+                Item item = itemsBox.get(i);
+                if (item.id == -1) {
+                    continue;
+                }
+                msg.writer().writeShort(item.template.id);
+                msg.writer().writeInt(item.quantity);
+                msg.writer().writeUTF(item.getInfo());
+                msg.writer().writeUTF(item.getContent());
+                msg.writer().writeByte(item.itemOptions.size()); //options
+                for (int j = 0; j < item.itemOptions.size(); j++) {
+                    msg.writer().writeByte(item.itemOptions.get(j).optionTemplate.id);
+                    msg.writer().writeShort(item.itemOptions.get(j).param);
+                }
+            }
 
+            this.player.sendMessage(msg);
+            msg.cleanup();
         } catch (Exception e) {
         }
     }
