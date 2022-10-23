@@ -1,6 +1,7 @@
 package real.player;
 //share by chibikun
 
+import real.lucky.ItemLucky;
 import real.pet.Pet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,6 +48,7 @@ public class PlayerDAO {
         String CREATE_PLAYER_BAG = "INSERT INTO player_bag(player_id,item_id,slot) VALUES (?,?,?)";
         String CREATE_PLAYER_BOX = "INSERT INTO player_box(player_id,item_id,slot) VALUES (?,?,?)";
         String CREATE_PLAYER_SKILL = "INSERT INTO player_skill(player_id,temp_id,level) VALUES (?,?,?)";
+        String PLAYER_LUCKY_BOX="INSERT INTO player_lucky_box(player_id,item_id,slot) VALUES (?,?,?)";
         boolean check = false;
         Connection conn = DBService.gI().getConnection();
         try {
@@ -106,6 +108,14 @@ public class PlayerDAO {
                     ps.executeBatch();
                     ps = conn.prepareStatement(CREATE_PLAYER_BOX);
                     for (int i = 0; i < 20; i++) {
+                        ps.setInt(1, playerId);
+                        ps.setObject(2, null);
+                        ps.setInt(3, i);
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                    ps = conn.prepareStatement(PLAYER_LUCKY_BOX);
+                    for (int i = 0; i < 116; i++) {
                         ps.setInt(1, playerId);
                         ps.setObject(2, null);
                         ps.setInt(3, i);
@@ -356,6 +366,7 @@ public class PlayerDAO {
         String UPDATE_PLAYER_BODY = "UPDATE player_body SET item_id=? WHERE player_id=? AND slot=?";
         String UPDATE_PLAYER_BAG = "UPDATE player_bag SET item_id=? WHERE player_id=? AND slot=?";
         String UPDATE_PLAYER_BOX = "UPDATE player_box SET item_id=? WHERE player_id=? AND slot=?";
+        String UPDATE_PLAYER_LUCKY_BOX="UPDATE player_lucky_box SET item_id=? WHERE player_id=? AND slot=?";
         Connection conn;
         PreparedStatement ps;
         try {
@@ -435,6 +446,23 @@ public class PlayerDAO {
                 }
             }
             ps.executeBatch();
+
+            //---------------------------------------
+            ps = conn.prepareStatement(UPDATE_PLAYER_LUCKY_BOX);
+            for (int i = 0; i < player.inventory.itemsLuckyBox.size(); i++) {
+                ItemLucky item = player.inventory.itemsLuckyBox.get(i);
+                System.out.println(item.id);
+                ps.setObject(1, item.id != -1 ? item.id : null);
+                ps.setLong(2, player.id);
+                ps.setInt(3, i);
+                ps.addBatch();
+                if (item.id != -1) {
+                    ItemDAO.updateDBLucky(item);
+                }
+            }
+            ps.executeBatch();
+
+            //-----------------------------------------
             //------------------------------------------------------------------
             ps = conn.prepareStatement("delete from player_skill where player_id = ?");
             ps.setInt(1, (int) player.id);

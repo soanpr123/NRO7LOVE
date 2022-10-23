@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import real.item.Item;
-import real.item.ItemLucky;
+//import real.item.ItemLucky;
 import real.item.ItemShop;
 import real.map.Map;
 import real.player.Player;
@@ -195,7 +195,18 @@ public abstract class Npc implements IAtionNpc {
         }
         return null;
     }
+public static boolean checkThuongDe(Player player){
+    for (Npc it : getByMap(player.map)){
+        if(it.tempId== 19){
 
+            return true;
+        }else {
+
+            return false;
+        }
+    }
+    return false;
+}
     public static List<Npc> getByMap(Map map) {
         List<Npc> list = new ArrayList<>();
         for (Npc npc : NPCS) {

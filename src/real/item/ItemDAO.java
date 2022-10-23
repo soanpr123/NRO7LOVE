@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import real.lucky.ItemLucky;
 import real.pet.Pet;
 import real.player.Player;
 import server.DBService;
@@ -140,6 +142,27 @@ public class ItemDAO {
                 }
                 player.inventory.itemsBox.add(slot, item);
             }
+            ps = conn.prepareStatement("SELECT * FROM player_lucky_box LEFT JOIN item ON player_lucky_box.item_id=item.id WHERE player_id=? ORDER BY slot");
+            ps.setLong(1, player.id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int slot = rs.getInt("slot");
+                System.out.println("DB id =========="+rs.getShort("temp_id"));
+
+                    ItemLucky item = new ItemLucky();
+                item.id = rs.getInt("item_id") == 0 ? -1 : rs.getInt("item_id");
+                if (item.id != -1) {
+                    item.itemTemplate = ItemData.getTemplate(rs.getShort("temp_id"));
+                    item.quantity = rs.getInt("quantity");
+                    loadOptionsItemLucky(item);
+                }
+                    player.inventory.itemsLuckyBox.add(slot, item);
+
+
+
+
+
+            }
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -167,6 +190,27 @@ public class ItemDAO {
         }
     }
 
+    public static void loadOptionsItemLucky(ItemLucky item) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBService.gI().getConnection();
+            ps = conn.prepareStatement("SELECT * FROM item_option WHERE item_id=?");
+            ps.setInt(1, item.id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ItemOption option = new ItemOption();
+                option.optionTemplate = ItemData.getItemOptionTemplate(rs.getInt("option_id"));
+                option.param = rs.getShort("param");
+                item.options.add(option);
+            }
+//            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void updateDB(Item item) {
         try {
             Connection conn = DBService.gI().getConnection();
@@ -184,6 +228,36 @@ public class ItemDAO {
             ps = conn.prepareStatement("INSERT INTO item_option(item_id,option_id,param) VALUES(?,?,?)");
             conn.setAutoCommit(false);
             for (ItemOption itemOption : item.itemOptions) {
+                ps.setInt(1, item.id);
+                ps.setInt(2, itemOption.optionTemplate.id);
+                ps.setInt(3, itemOption.param);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+//            conn.commit();
+//            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateDBLucky(ItemLucky item) {
+        try {
+            Connection conn = DBService.gI().getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM item_option WHERE item_id=?");
+            ps.setInt(1, item.id);
+            if (ps.executeUpdate() == 1) {
+                //System.out.println("delete option item " + item.id);
+            }
+            ps = conn.prepareStatement("UPDATE item SET quantity=? WHERE id=?");
+            ps.setInt(1, item.quantity);
+            ps.setInt(2, item.id);
+            if (ps.executeUpdate() == 1) {
+                //System.out.println("delete item " + item.id);
+            }
+            ps = conn.prepareStatement("INSERT INTO item_option(item_id,option_id,param) VALUES(?,?,?)");
+            conn.setAutoCommit(false);
+            for (ItemOption itemOption : item.options) {
                 ps.setInt(1, item.id);
                 ps.setInt(2, itemOption.optionTemplate.id);
                 ps.setInt(3, itemOption.param);

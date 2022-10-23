@@ -46,19 +46,19 @@ public class ShopData {
         try {
             Connection con = DBService.gI().getConnection();
             con.setAutoCommit(false);
-            PreparedStatement ps1 = con.prepareStatement("insert into item_shop values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            PreparedStatement ps2 = con.prepareStatement("insert into item_option_shop values(?,?,?,?,?)");
+            PreparedStatement ps1 = con.prepareStatement("insert into item_lucky_round values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement ps2 = con.prepareStatement("insert into item_option_lucky values(?,?,?,?,?)");
             DataInputStream dis = new DataInputStream(new FileInputStream(new File(path)));
             int npc = dis.readByte();
-            System.out.println("npc: " + npc);
+            System.out.println("npc: " + dis.readByte());
             int tab = dis.readByte();
             System.out.println("tab: " + tab);
-            String tabName = dis.readUTF().replaceAll("\\.", "\n");
+//            String tabName = dis.readUTF().replaceAll("\\.", "\n");
             int itemCount = dis.readInt();
 
             System.out.println("npc: " + npc);
             System.out.println("tab: " + tab);
-            System.out.println("tabName: " + tabName);
+//            System.out.println("tabName: " + tabName);
             System.out.println("itemCount: " + itemCount);
             for (int i = 0; i < itemCount; i++) {
                 int tempId = dis.readShort();
@@ -72,7 +72,7 @@ public class ShopData {
                 System.out.println("gem: " + gem);
                 System.out.println("countOption: " + countOption);
 
-                PreparedStatement psc = con.prepareStatement("select * from item_shop where npc_id = ? and item_template_id = ? and tab = ?");
+                PreparedStatement psc = con.prepareStatement("select * from item_lucky_round where npc_id = ? and item_template_id = ? and tab = ?");
                 psc.setInt(1, npc);
                 psc.setInt(2, tempId);
                 psc.setInt(3, tab);
@@ -88,7 +88,7 @@ public class ShopData {
                 ps1.setInt(2, tempId);
                 ps1.setInt(3, 0); //type
                 ps1.setInt(4, tab);
-                ps1.setString(5, tabName);
+//                ps1.setString(5, tabName);
                 ps1.setInt(6, 1); //item new
                 ps1.setInt(7, 1); //sell
                 ps1.setInt(8, gold);
@@ -236,7 +236,7 @@ public class ShopData {
     }
 
     public static void main(String[] args) {
-        readShopFromFile("C:\\Users\\adm\\Desktop\\yardrat");
+        readShopFromFile("C:\\Users\\phama\\Documents\\a");
         
 //        readShopFromDataTeam("C:\\Users\\adm\\Desktop\\data nro\\shopteam\\7_0");
 //        readShopFromDataTeam("C:\\Users\\adm\\Desktop\\data nro\\shopteam\\8_1");

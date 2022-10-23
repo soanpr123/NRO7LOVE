@@ -45,6 +45,9 @@ public class Mob_ItemDAO {
                 itemList_RoiDo_maxValue[gender][loop] = maxValue;
 //                System.out.println("itemList_RoiDo_idItem["+gender+"]["+loop+"] = "+ itemList_RoiDo_idItem[gender][loop]);
                 loop++;
+                if(loop==88){
+                    return;
+                }
             }
 
         } catch (Exception e) {

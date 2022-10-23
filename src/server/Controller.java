@@ -3,7 +3,13 @@ package server;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 
+import real.item.*;
+import real.lucky.ItemLucky;
 import real.lucky.Lucky;
+import real.lucky.luckyItemDAO;
+import real.map.*;
+import real.npc.Npc;
+import real.npc.NpcFactory;
 import server.io.Message;
 import server.io.Session;
 import java.io.IOException;
@@ -11,6 +17,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import real.boss.Broly;
@@ -22,14 +30,6 @@ import real.func.PVP;
 import real.func.Shop;
 import real.func.Transaction;
 import real.func.UseItem;
-import real.item.Item;
-import real.item.ItemDAO;
-import real.item.ItemData;
-import real.item.ItemOption;
-import real.map.ItemMap;
-import real.map.Map;
-import real.map.MapManager;
-import real.map.MapService;
 import real.pet.PetDAO;
 import real.player.Player;
 import real.player.PlayerDAO;
@@ -88,13 +88,23 @@ public class Controller {
                 case 6: //buy item
                     int typeIem = _msg.reader().readByte();
                     int idItem = _msg.reader().readShort();
-                    System.out.println(idItem);
+                    System.out.println(typeIem);
                     int quantity = 0;
+                    int idNpc=0;
                     try {
                         quantity = _msg.reader().readShort();
                     } catch (Exception e) {
                     }
-                    Shop.gI().buyItem(player, idItem, typeIem, quantity);
+                            if(Npc.checkThuongDe(player)){
+                                System.out.println("Day la thuong de");
+                                Shop.gI().buyItem(player, idItem, typeIem, quantity,19);
+                            }else {
+                                Shop.gI().buyItem(player, idItem, typeIem, quantity,-1);
+                            }
+
+
+
+
                     break;
                 case 29:
                     Service.getInstance().openZoneUI(player);
@@ -406,7 +416,7 @@ public class Controller {
                         Service.getInstance().sendMessage(_session, -44, "1632921172115_-44_r");
                     } else if (text.equals("hSS")) {
 //                        Service.getInstance().hsChar(player);
-                    } else if (text.equals("Dje")) {
+                    } else if (text.equals("die")) {
                         Service.getInstance().charDie(player);
                     } else if (text.contains("ctts ")) {
                              int ctId = Integer.parseInt(text.replace("ct ", ""));
@@ -508,18 +518,71 @@ public class Controller {
                     }else {
                         byte soluong=_msg.reader().readByte();
                         System.out.println(soluong);
+                        int randomQua = Util.nextInt(10, 100);
+                        int items = soluong;
+                        Message  msg = new Message(129);
+                        msg.writer().writeByte(1);
+                        msg.writer().writeByte(soluong);
+
+
+                        for (int i = 0; i < items; i++) {
+                            int randomItem = Util.nextInt(0, luckyItemDAO.itemList_RoiDo_idItem.length);
+                            short idItemQua = (short) luckyItemDAO.itemList_RoiDo_idItem[randomItem];
+                            int optionItem = luckyItemDAO.itemList_RoiDo_Optione[randomItem];
+                            int paramOption =  luckyItemDAO.itemList_RoiDo_maxValue[randomItem];
+                            int paramOption_Random = Util.nextInt(Math.round(paramOption / 2), paramOption);
+
+                            ItemLucky itemLucky = new ItemLucky();
+
+                            ArrayList<ItemOption> options = new ArrayList<>();
+                            int ops = 1;
+                            for (int j = 0; j < ops; j++) {
+                                options.add(new ItemOption(optionItem, (short) paramOption_Random));
+                            }
+                           itemLucky.id= ItemDAO.create( idItemQua,options);
+                            itemLucky.options = options;
+                            itemLucky.itemTemplate=ItemData.getTemplate(idItemQua);
+                            itemLucky.quantity=1;
+                            itemLucky.isCaitrang=CaiTrangData.getCaiTrangByTempID(idItemQua) != null;
+                            itemLucky.playerId = Math.abs(player.id);
+                            System.out.println("item: " + itemLucky.itemTemplate.name + " - " + idItemQua + " - " + optionItem + " - "+paramOption_Random);
+                            msg.writer().writeShort(itemLucky.itemTemplate.iconID);
+                            player.inventory.itemToLuckyBox(itemLucky);
+
+                         // id nhan nat
+                        }
+                        System.out.println(player.inventory.itemsLuckyBox.size());
+
+
                         try {
-                            Message  msg = new Message(129);
-                            msg.writer().writeByte(1);
-                            msg.writer().writeByte(6);
-                            msg.writer().writeShort(931);
-                            msg.writer().writeShort(420);
-                            msg.writer().writeShort(421);
-                            msg.writer().writeShort(422);
-                            msg.writer().writeShort(423);
-                            msg.writer().writeShort(424);
-                            msg.writer().writeShort(425);
-                            player.sendMessage(msg);
+//                            Item item = new Item();
+//                            item.template = ItemData.getTemplate((short) 25);
+//                            ItemShop itemShop = ItemShopDAO.getByTemp(25);
+//                            System.out.println(item.template.id);
+//                            if (itemShop.itemOptions.size() > 0) {
+//                                for (ItemOptionShop ios : itemShop.itemOptions) {
+//                                    item.itemOptions.add(new ItemOption(ios.optionId, (short) ios.param));
+//                                }
+//                            } else {
+//                                item.itemOptions.add(new ItemOption(73, (short) 0));
+//                            }
+//                            if (item.template.id == 193 || item.template.id == 361) {
+//                                item.quantity = 10;
+//                                System.out.println("SL101");
+//                            } else {
+//                                System.out.println("SL1");
+//                                item.quantity = 1;
+//                            }
+////                            System.out.println(player.inventory.addItemLuckyBox(item));
+//                            item.id = ItemDAO.create(item.template.id, item.itemOptions);
+//                            player.inventory.itemToLuckyBox(item);
+//                            System.out.println(player.inventory.itemsLuckyBox.size());
+//
+////                            pl.inventory.sortItemBag();
+////                            pl.inventory.sendItemBags();
+
+
+                        player.sendMessage(msg);
                             msg.cleanup();
                         } catch (Exception e) {
                         }

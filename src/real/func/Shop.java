@@ -105,6 +105,7 @@ public class Shop {
                 msg.writer().writeByte(items);
                 for (int j = 0; j < items; j++) {
                     ItemShop it = list.get(j);
+                    System.out.println(it.itemTemplate.id);
                     msg.writer().writeShort(it.itemTemplate.id);
                     msg.writer().writeInt(it.gold);
                     msg.writer().writeInt(it.gem);
@@ -135,8 +136,13 @@ public class Shop {
         }
     }
 
-    public void buyItem(Player pl, int itemID, int type, int quantity) {
-        boolean isNotBuy = false;
+    public void buyItem(Player pl, int itemID, int type, int quantity,int idNpc) {
+        boolean isNotBuy ;
+      if(idNpc==19){
+           isNotBuy = true;
+      }else{
+          isNotBuy=false;
+      }
         try {
             ItemShop itemShop = ItemShopDAO.getByTemp(itemID);
             if (itemShop.gold > 0) {
@@ -176,6 +182,11 @@ public class Shop {
                 pl.inventory.sortItemBag();
                 pl.inventory.sendItemBags();
                 Service.getInstance().sendThongBao(pl, "Chúc mừng bạn đã nhận được " + itemShop.itemTemplate.name);
+            }else {
+                if(type==0){
+                    System.out.println(itemID);
+                    System.out.println("Nhận đồ của thượng đế");
+                }
             }
 
         } catch (Exception e) {
