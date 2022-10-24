@@ -5,6 +5,8 @@ import java.net.Socket;
 import real.clan.ClanManager;
 import real.item.CaiTrangData;
 import real.item.ItemData;
+
+import real.lucky.luckyItemDAO;
 import real.map.MapManager;
 import real.map.Mob_ItemDAO;
 import real.npc.BoMongDAO;
@@ -42,6 +44,7 @@ public class ServerManager {
         SkillData.loadSkill();
         ItemData.loadDataItems();
         Mob_ItemDAO.getItemRoi();
+        luckyItemDAO.getItemRoi();
         //OnloadDB.active(5000, 5000);
         BoMongDAO.active(10000, 10000);
         this.controller = new Controller();

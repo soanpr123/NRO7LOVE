@@ -308,8 +308,9 @@ public class CreateShop
     }
 
     private void loadImageItem(int iconId) {
+        System.out.println("data/res_icon_new/x4" + iconId +".png");
         try {
-            BufferedImage img = ImageIO.read(new File("data//icon//" + iconId));
+            BufferedImage img = ImageIO.read(new File("data/res_icon_new/x4/" + iconId +".png"));
             this.lblImage.setIcon(new ImageIcon(img.getScaledInstance(img.getWidth() * 2, img.getHeight() * 2, 4)));
         } catch (Exception e) {
             e.printStackTrace();

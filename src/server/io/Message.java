@@ -25,7 +25,9 @@ public class Message {
     }
 
     public Message(int command) {
+
         this((byte) command);
+        System.out.println("cmd============>" + (byte) command);
     }
 
     public Message(byte command) {

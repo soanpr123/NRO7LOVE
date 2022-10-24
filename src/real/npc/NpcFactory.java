@@ -1,26 +1,9 @@
 package real.npc;
 
-import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import real.func.ChangeMap;
-import real.func.Combine;
-import real.func.PVP;
-import real.func.Shop;
-import real.func.SummonDragon;
-import static real.func.SummonDragon.SHENRON_1_STAR_WISHES_1;
-import static real.func.SummonDragon.SHENRON_1_STAR_WISHES_2;
-import static real.func.SummonDragon.SHENRON_SAY;
-
+import real.func.*;
 import real.item.CaiTrangData;
-import real.item.ItemData;
-import real.item.ItemLucky;
-import real.item.ItemShop;
+import real.item.Item;
 import real.lucky.Lucky;
-
 import real.magictree.MagicTree;
 import real.map.MapManager;
 import real.player.Player;
@@ -29,11 +12,16 @@ import server.Service;
 import server.Util;
 import server.io.Message;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import static real.func.SummonDragon.*;
+
 /**
- *
  * @author 💖 Trần Lại 💖
  * @copyright 💖 GirlkuN 💖
- *
  */
 public class NpcFactory {
 
@@ -148,7 +136,7 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 23) {
-                                this.createOtherMenu(pl, 0, "Nhận quà tân thủ tại đây", new String[]{"Nhận 100K hến ", "Nhận 2 Tỏi Vàng", "Nhận đệ tử"});
+                                this.createOtherMenu(pl, 0, "Nhận quà tân thủ tại đây", "Nhận 100K hến ", "Nhận 2 Tỏi Vàng", "Nhận đệ tử");
                             }
                         }
 
@@ -185,7 +173,7 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 21) {
-                                this.createOtherMenu(pl, 0, "Nhận quà tân thủ tại đây", new String[]{"Nhận 100K hến", "Nhận 2 Tỏi Vàng", "Nhận đệ tử"});
+                                this.createOtherMenu(pl, 0, "Nhận quà tân thủ tại đây", "Nhận 100K hến", "Nhận 2 Tỏi Vàng", "Nhận đệ tử");
                             }
                         }
 
@@ -221,7 +209,7 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 22) {
-                                this.createOtherMenu(pl, 0, "Nhận quà tân thủ tại đây", new String[]{"Nhận 100K hến", "Nhận 2 Tỏi Vàng", "Nhận đệ tử"});
+                                this.createOtherMenu(pl, 0, "Nhận quà tân thủ tại đây", "Nhận 100K hến", "Nhận 2 Tỏi Vàng", "Nhận đệ tử");
                             }
                         }
 
@@ -253,12 +241,12 @@ public class NpcFactory {
                         }
                     };
                     break;
-                case  RUONG_DO:
+                case RUONG_DO:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
                         @Override
                         public void openMenu(Player player) {
-                            if(tempId==3){
-                                try{
+                            if (tempId == 3) {
+                                try {
                                     Message m;
                                     m = new Message(-35);
                                     m.writer().writeByte(1);
@@ -266,7 +254,7 @@ public class NpcFactory {
                                     m.cleanup();
                                 } catch (Exception e) {
                                 }
-                            }else {
+                            } else {
                                 super.openMenu(player);
                             }
 
@@ -275,7 +263,8 @@ public class NpcFactory {
                         @Override
                         public void confirmMenu(Player player, int select) {
 
-                        };
+                        }
+
                     };
 
                     break;
@@ -285,24 +274,24 @@ public class NpcFactory {
                         public void openMenu(Player pl) {
                             if (this.mapId == (21 + pl.gender)) {
                                 MagicTree dauThan = pl.magicTree;
-                                if (dauThan.isUpdate == true) {
+                                if (dauThan.isUpdate) {
                                     int gemUp = dauThan.gemUpPea;
                                     int phantram = ((dauThan.timeUpdate - ((int) (System.currentTimeMillis() / 1000))) * 100 / dauThan.timeUpPea);
                                     if (phantram <= 80) {
                                         gemUp = (dauThan.gemUpPea * phantram / 100);
                                     }
 
-                                    this.createMenuMagicTree(pl, 0, new String[]{"Nâng cấp nhanh\n" + Util.powerToString(gemUp).replace(" ", "") + " ngọc", "Hủy nâng đậu\n" + Util.powerToString(dauThan.goldUpPea / 2).replace(" ", "") + " vàng"});
+                                    createMenuMagicTree(pl, 0, "Nâng cấp nhanh\n" + Util.powerToString(gemUp).replace(" ", "") + " ngọc", "Hủy nâng đậu\n" + Util.powerToString(dauThan.goldUpPea / 2).replace(" ", "") + " vàng");
 
                                 } else {
                                     if (dauThan.currentPea == dauThan.maxPea && dauThan.level < 10) {
-                                        this.createMenuMagicTree(pl, 0, new String[]{"Thu hoạch", "Nâng cấp\n" + Util.powerToString(dauThan.goldUpPea).replace(" ", "") + " vàng"});
+                                        createMenuMagicTree(pl, 0, "Thu hoạch", "Nâng cấp\n" + Util.powerToString(dauThan.goldUpPea).replace(" ", "") + " vàng");
                                     } else if (dauThan.level == 10 && dauThan.currentPea == dauThan.maxPea) {
-                                        this.createMenuMagicTree(pl, 0, new String[]{"Thu hoạch"});
+                                        createMenuMagicTree(pl, 0, "Thu hoạch");
                                     } else if (dauThan.level == 10 && dauThan.currentPea != dauThan.maxPea) {
-                                        this.createMenuMagicTree(pl, 0, new String[]{"Thu hoạch", "Kết hạt nhanh\n" + dauThan.gemOnPea + " ngọc"});
+                                        createMenuMagicTree(pl, 0, "Thu hoạch", "Kết hạt nhanh\n" + dauThan.gemOnPea + " ngọc");
                                     } else {
-                                        this.createMenuMagicTree(pl, 0, new String[]{"Thu hoạch", "Nâng cấp\n" + Util.powerToString(dauThan.goldUpPea).replace(" ", "") + " vàng", "Kết hạt nhanh\n" + dauThan.gemOnPea + " ngọc"});
+                                        createMenuMagicTree(pl, 0, "Thu hoạch", "Nâng cấp\n" + Util.powerToString(dauThan.goldUpPea).replace(" ", "") + " vàng", "Kết hạt nhanh\n" + dauThan.gemOnPea + " ngọc");
                                     }
                                 }
 
@@ -322,22 +311,20 @@ public class NpcFactory {
                     break;
                 case BUNMA_:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
-                         @Override
+                        @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 102) {
-                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé",new String[]{"Cửa hàng"});
-                            }else{
+                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé", "Cửa hàng");
+                            } else {
                                 super.openMenu(pl);
                             }
-                            }
-                        
+                        }
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             if (player.getIndexMenu() == 0) {
-                                switch (select) {
-                                    case 0://Shop
-                                            Shop.gI().openShop(player, this.tempId);
-                                        break;
+                                if (select == 0) {//Shop
+                                    Shop.gI().openShop(player, this.tempId);
                                 }
                             }
                         }
@@ -345,26 +332,24 @@ public class NpcFactory {
                     break;
                 case BUNMA:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
-                         @Override
+                        @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 0 || this.mapId == 84) {
-                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé",new String[]{"Cửa hàng"});
-                            }else{
+                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé", "Cửa hàng");
+                            } else {
                                 super.openMenu(pl);
                             }
-                            }
-                        
+                        }
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             if (player.getIndexMenu() == 0) {
-                                switch (select) {
-                                    case 0://Shop
-                                        if (player.gender == 0) {
-                                            Shop.gI().openShop(player, this.tempId);
-                                        } else {
-                                            Npc.createMenuConMeo(player, IGNORE_MENU, 562, "Xin lỗi cưng, chị chỉ bán đồ cho người Trái Đất", "Đóng");
-                                        }
-                                        break;
+                                if (select == 0) {//Shop
+                                    if (player.gender == 0) {
+                                        Shop.gI().openShop(player, this.tempId);
+                                    } else {
+                                        Npc.createMenuConMeo(player, IGNORE_MENU, 562, "Xin lỗi cưng, chị chỉ bán đồ cho người Trái Đất", "Đóng");
+                                    }
                                 }
                             }
                         }
@@ -374,72 +359,33 @@ public class NpcFactory {
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
                         @Override
                         public void openMenu(Player pl) {
-                            if (this.mapId == 45 ) {
-                                this.createOtherMenu(pl, 0, "Mày muốn gì ",new String[]{"Vòng quay","Ruong phu","Đóng"});
-                            }else{
+                                int num=0;
+                                for(int i=0;i<pl.inventory.itemsLuckyBox.size();i++){
+                                    if(pl.inventory.itemsLuckyBox.get(i).id!=-1){
+                                        num++;
+                                    }
+                                }
+                            if (this.mapId == 45) {
+                                this.createOtherMenu(pl, 0, "Mày muốn gì ", "Vòng quay", "Rương phụ \n đang có "+num +" món", "Đóng");
+                            } else {
                                 super.openMenu(pl);
                             }
                         }
 
                         @Override
                         public void confirmMenu(Player player, int select) {
-                            Message msg;
-
-                                System.out.println(select);
-                                switch (select) {
-                                    case 0://Shop
-                                        Lucky.gI().luckyRound(player);
-                                        break;
-                                    case 1:
-//                                        Message msg;
-                                        try {
-                                            List<ItemLucky> list = ItemData.itemLocky;
-                                            msg = new Message(212);
-                                            msg.writer().writeByte(4);
-                                            msg.writer().writeByte(1);
 
 
-
-
-                                                System.out.println("size list " + list.size());
-                                                msg.writer().writeUTF("Rương" +
-                                                        " Phụ");
-                                                int items = list.size();
-                                                msg.writer().writeByte(items);
-//                                            msg.writer().writeShort(1);
-                                                for (int j = 0; j < items; j++) {
-                                                    ItemLucky it = list.get(j);
-                                                    msg.writer().writeShort(it.itemTemplate.id);
-                                                    msg.writer().writeInt(it.gold);
-                                                    msg.writer().writeInt(it.gem);
-                                                    int options = it.itemOptions.size();
-//                                                    msg.writer().writeUTF("Nhận");
-                                                    msg.writer().writeByte(options);
-                                                    if (options != 0) {
-                                                        for (int k = 0; k < options; k++) {
-                                                            msg.writer().writeByte(it.itemOptions.get(k).optionId);
-                                                            msg.writer().writeShort(it.itemOptions.get(k).param);
-                                                        }
-                                                    }
-
-                                                    int isCaiTrang = it.isCaiTrang ? 1 : 0;
-                                                    msg.writer().writeByte(isCaiTrang);
-                                                    if (isCaiTrang == 1) {
-                                                        CaiTrangData.CaiTrang ct = CaiTrangData.getCaiTrangByTempID(it.itemTemplate.id);
-                                                        msg.writer().writeShort(ct.getID()[0]);
-                                                        msg.writer().writeShort(ct.getID()[1]);
-                                                        msg.writer().writeShort(ct.getID()[2]);
-                                                        msg.writer().writeShort(ct.getID()[3]);
-                                                    }
-                                                }
-
-                                            player.sendMessage(msg);
-                                            msg.cleanup();
-                                        } catch (Exception e) {
-                                        }
-                                        break;
-                                }
+                            System.out.println(select);
+                            switch (select) {
+                                case 0://Shop
+                                    Lucky.gI().luckyRound(player);
+                                    break;
+                                case 1:
+                                    Lucky.gI().openLuckyBox(player);
+                                    break;
                             }
+                        }
 
                     };
                     break;
@@ -448,22 +394,21 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 7 || this.mapId == 84) {
-                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé",new String[]{"Cửa hàng"});
-                            }else{
+                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé", "Cửa hàng");
+                            } else {
                                 super.openMenu(pl);
                             }
-                            }
+                        }
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             if (player.getIndexMenu() == 0) {
-                                switch (select) {
-                                    case 0://Shop
-                                        if (player.gender == 1) {
-                                            Shop.gI().openShop(player, this.tempId);
-                                        } else {
-                                            Npc.createMenuConMeo(player, IGNORE_MENU, 350, "Xin lỗi anh ạ, em chỉ bán đồ cho dân tộc Namếc", "Đóng");
-                                        }
-                                        break;
+                                if (select == 0) {//Shop
+                                    if (player.gender == 1) {
+                                        Shop.gI().openShop(player, this.tempId);
+                                    } else {
+                                        Npc.createMenuConMeo(player, IGNORE_MENU, 350, "Xin lỗi anh ạ, em chỉ bán đồ cho dân tộc Namếc", "Đóng");
+                                    }
                                 }
                             }
                         }
@@ -471,25 +416,24 @@ public class NpcFactory {
                     break;
                 case APPULE:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
-                         @Override
+                        @Override
                         public void openMenu(Player pl) {
-                            if (this.mapId == 14  || this.mapId == 84) {
-                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé",new String[]{"Cửa hàng"});
-                            }else{
+                            if (this.mapId == 14 || this.mapId == 84) {
+                                this.createOtherMenu(pl, 0, "Cậu cần trang bị gì cứ đến chỗ tôi nhé", "Cửa hàng");
+                            } else {
                                 super.openMenu(pl);
                             }
-                            }
+                        }
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             if (player.getIndexMenu() == 0) {
-                                switch (select) {
-                                    case 0://Shop
-                                        if (player.gender == 2) {
-                                            Shop.gI().openShop(player, this.tempId);
-                                        } else {
-                                            Npc.createMenuConMeo(player, IGNORE_MENU, 565, "Về hành tinh hạ đẳng của ngươi mà mua đồ cùi,rẻ rách nhé. Tại đây ta chỉ bán đồ cho người Xayda thôi", "Đóng");
-                                        }
-                                        break;
+                                if (select == 0) {//Shop
+                                    if (player.gender == 2) {
+                                        Shop.gI().openShop(player, this.tempId);
+                                    } else {
+                                        Npc.createMenuConMeo(player, IGNORE_MENU, 565, "Về hành tinh hạ đẳng của ngươi mà mua đồ cùi,rẻ rách nhé. Tại đây ta chỉ bán đồ cho người Xayda thôi", "Đóng");
+                                    }
                                 }
                             }
                         }
@@ -500,7 +444,7 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 24) {
-                                this.createOtherMenu(pl, 0, "Tàu Vũ Trụ của ta có thể đưa cậu đến hành tinh khác chỉ trong 3 giây. Cậu muốn đi đâu?",new String[]{"Đến\nNamếc","Đến\nXayda","Siêu thị"});
+                                this.createOtherMenu(pl, 0, "Tàu Vũ Trụ của ta có thể đưa cậu đến hành tinh khác chỉ trong 3 giây. Cậu muốn đi đâu?", "Đến\nNamếc", "Đến\nXayda", "Siêu thị");
                             } else if (this.mapId == 84) {
                                 this.createOtherMenu(pl, 0, "Tàu Vũ Trụ của ta có thể đưa cậu đến hành tinh khác chỉ trong 3 giây. Cậu muốn đi đâu?",
                                         pl.gender == 0 ? "Đến\nTrái Đất" : pl.gender == 1 ? "Đến\nNamếc" : "Đến\nXayda");
@@ -535,11 +479,12 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 25) {
-                                this.createOtherMenu(pl, 0, "Tàu Vũ Trụ của ta có thể đưa cậu đến hành tinh khác chỉ trong 3 giây. Cậu muốn đi đâu?",new String[]{"Đến\nTrái đất","Đến\nXayda","Siêu thị"});
+                                this.createOtherMenu(pl, 0, "Tàu Vũ Trụ của ta có thể đưa cậu đến hành tinh khác chỉ trong 3 giây. Cậu muốn đi đâu?", "Đến\nTrái đất", "Đến\nXayda", "Siêu thị");
                             } else {
                                 super.openMenu(pl);
                             }
                         }
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             switch (select) {
@@ -561,13 +506,13 @@ public class NpcFactory {
                         @Override
                         public void openMenu(Player pl) {
                             if (this.mapId == 19) {
-                                this.createOtherMenu(pl, 0, "Cậu muốn tới đâu?", new String[]{"Đến\nCold", "Đến\nNappa"});
+                                this.createOtherMenu(pl, 0, "Cậu muốn tới đâu?", "Đến\nCold", "Đến\nNappa");
                             } else if (this.mapId == 68) {
-                                this.createOtherMenu(pl, 0, "Sợ chạy rồi sao?", new String[]{"Về thành phố\nVegeta"});
+                                this.createOtherMenu(pl, 0, "Sợ chạy rồi sao?", "Về thành phố\nVegeta");
                             } else if (this.mapId == 26) {
-                                this.createOtherMenu(pl, 0, "Tàu Vũ Trụ Xayda Sẽ Đưa Ngươi Đến Bất Kỳ Đâu Ngươi Muốn Trong 3 Giây!", new String[]{"Đến\nTrái Đất", "Đến\nNamec", "Đến\nSiêu Thị"});
-                                
-                            }else{
+                                this.createOtherMenu(pl, 0, "Tàu Vũ Trụ Xayda Sẽ Đưa Ngươi Đến Bất Kỳ Đâu Ngươi Muốn Trong 3 Giây!", "Đến\nTrái Đất", "Đến\nNamec", "Đến\nSiêu Thị");
+
+                            } else {
                                 super.openMenu(pl);
                             }
                         }
@@ -585,7 +530,7 @@ public class NpcFactory {
                                         break;
                                 }
 
-                            };
+                            }
                             if (this.mapId == 26) {
                                 switch (select) {
                                     case 0:
@@ -609,36 +554,31 @@ public class NpcFactory {
                         }
                     };
                     break;
-                    case CALICK:
+                case CALICK:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
                         @Override
                         public void openMenu(Player pl) {
-                                    if (this.mapId == 28) {
-                                        this.createOtherMenu(pl, 0, "Ngươi có muốn tới tương lai không?", new String[]{"Có", "Không"});
-                                   } else if (this.mapId == 102) {
-                                        this.createOtherMenu(pl, 0, "Muốn quay về hả?", new String[]{"Về lại chỗ cũ" , "Không"});        
-                                    } else {
-                                        super.openMenu(pl);
-                                   }
+                            if (this.mapId == 28) {
+                                this.createOtherMenu(pl, 0, "Ngươi có muốn tới tương lai không?", "Có", "Không");
+                            } else if (this.mapId == 102) {
+                                this.createOtherMenu(pl, 0, "Muốn quay về hả?", "Về lại chỗ cũ", "Không");
+                            } else {
+                                super.openMenu(pl);
+                            }
                         }
 
                         @Override
 
                         public void confirmMenu(Player player, int select) {
                             if (this.mapId == 28) {
-                                switch (select) {
-                                    case 0:
-                                        ChangeMap.gI().changeMapBySpaceShip(player, 102, -1, -1, ChangeMap.DEFAULT_SPACE_SHIP);
-                                        break;
-                                           }
+                                if (select == 0) {
+                                    ChangeMap.gI().changeMapBySpaceShip(player, 102, -1, -1, ChangeMap.DEFAULT_SPACE_SHIP);
+                                }
 
-                            };
+                            }
                             if (this.mapId == 102) {
-                                switch (select) {
-                                    case 0:
-                                        ChangeMap.gI().changeMapBySpaceShip(player, 28, -1, -1, ChangeMap.DEFAULT_SPACE_SHIP);
-                                        break;
-                                       
+                                if (select == 0) {
+                                    ChangeMap.gI().changeMapBySpaceShip(player, 28, -1, -1, ChangeMap.DEFAULT_SPACE_SHIP);
                                 }
 
                             }
@@ -650,13 +590,13 @@ public class NpcFactory {
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
                         @Override
                         public void openMenu(Player pl) {
-                                    if (this.mapId == 5 || this.mapId == 13 || this.mapId == 20)  {
-                                        this.createOtherMenu(pl, 0, "Xin chào, ta có một số vật phẩm đặt biệt cậu có muốn xem không?", new String[]{"Cửa hàng", "Tiệm cắt tóc"});
-                                   } else {
-                                        super.openMenu(pl);
-                                   }
+                            if (this.mapId == 5 || this.mapId == 13 || this.mapId == 20) {
+                                this.createOtherMenu(pl, 0, "Xin chào, ta có một số vật phẩm đặt biệt cậu có muốn xem không?", "Cửa hàng", "Tiệm cắt tóc");
+                            } else {
+                                super.openMenu(pl);
+                            }
                         }
-                        
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             if (this.mapId == 5 || this.mapId == 13 || this.mapId == 20) {
@@ -686,21 +626,21 @@ public class NpcFactory {
                     break;
                 case BA_HAT_MIT:
                     npc = new Npc(mapId, status, cx, cy, tempId, avartar) {
-                        
+
                         @Override
                         public void openMenu(Player pl) {
-                                    if (this.mapId == 5)  {
-                                        this.createOtherMenu(pl, 0, "Ngươi tìm ta có việc gì ?", new String[]{"Ép sao\nTrang bị","Pha lê hóa\nTrang bị", "Chuyển hóa\nTrang bị","Võ đài\nSinh Tử"});
-                                   } else if(this.mapId == 112){
-                                       this.createOtherMenu(pl, 0, "Ngươi muốn đăng ký thi đấu võ đài? Nhiều phần thưởng giá trị đang đợi ngươi đó", new String[]{"BXH","Đồng ý \n 0 ngọc", "Từ chối","Về đảo rùa"});
-                                    }else if (this.mapId == 84 || this.mapId == 42 || this.mapId == 43)  {
-                                        this.createOtherMenu(pl, 0, "Ngươi tìm ta có việc gì ?", new String[]{"Cửa hàng\nBùa","Nâng cấp\nVật phẩm", "Nâng cấp\nBông tai\nPorata","Làm phép\nNhập đá","Nhập\nNgọc Rồng"});
-                                   }else{
-                                        super.openMenu(pl);
-                                   }
+                            if (this.mapId == 5) {
+                                this.createOtherMenu(pl, 0, "Ngươi tìm ta có việc gì ?", "Ép sao\nTrang bị", "Pha lê hóa\nTrang bị", "Chuyển hóa\nTrang bị", "Võ đài\nSinh Tử");
+                            } else if (this.mapId == 112) {
+                                this.createOtherMenu(pl, 0, "Ngươi muốn đăng ký thi đấu võ đài? Nhiều phần thưởng giá trị đang đợi ngươi đó", "BXH", "Đồng ý \n 0 ngọc", "Từ chối", "Về đảo rùa");
+                            } else if (this.mapId == 84 || this.mapId == 42 || this.mapId == 43) {
+                                this.createOtherMenu(pl, 0, "Ngươi tìm ta có việc gì ?", "Cửa hàng\nBùa", "Nâng cấp\nVật phẩm", "Nâng cấp\nBông tai\nPorata", "Làm phép\nNhập đá", "Nhập\nNgọc Rồng");
+                            } else {
+                                super.openMenu(pl);
+                            }
                         }
-                        
-                        
+
+
                         @Override
                         public void confirmMenu(Player player, int select) {
                             if (this.mapId == 5) {
@@ -721,10 +661,8 @@ public class NpcFactory {
                                     }
                                 }
                             } else if (this.mapId == 112) {
-                                switch (select) {
-                                    case 3:
-                                        ChangeMap.gI().changeMapBySpaceShip(player, 5, Util.nextInt(0, (MapManager.gI().getMapById(5).size() -1)), 1156, ChangeMap.DEFAULT_SPACE_SHIP);
-                                        break;
+                                if (select == 3) {
+                                    ChangeMap.gI().changeMapBySpaceShip(player, 5, Util.nextInt(0, (MapManager.gI().getMapById(5).size() - 1)), 1156, ChangeMap.DEFAULT_SPACE_SHIP);
                                 }
                             }
                         }

@@ -3,7 +3,10 @@ package real.player;
 import java.util.ArrayList;
 import java.util.List;
 import real.item.Item;
+import real.item.ItemDAO;
+import real.item.ItemData;
 import real.item.ItemOption;
+import real.lucky.ItemLucky;
 import real.map.ItemMap;
 import real.pet.Pet;
 import server.Service;
@@ -24,6 +27,8 @@ public class Inventory {
 
     public List<Item> itemsBody;
     public List<Item> itemsBag;
+
+    public  List<ItemLucky> itemsLuckyBox;
     public List<Item> itemsBox;
 
     public List<Item> itemsTrade;
@@ -39,6 +44,7 @@ public class Inventory {
         itemsBag = new ArrayList<>();
         itemsBox = new ArrayList<>();
         itemsTrade = new ArrayList<>();
+        itemsLuckyBox=new ArrayList<>();
     }
 
     public int getGemAndRuby() {
@@ -75,6 +81,22 @@ public class Inventory {
         int curentBox = 0;
         for(Item it : this.itemsBox){
             if(it.id != -1){
+                curentBox += 1;
+            }
+        }
+        if(curentBox == maxBox){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean getFullLuckyBox(){
+        int  maxBox = this.itemsLuckyBox.size();
+        int curentBox = 0;
+        for(ItemLucky it : this.itemsLuckyBox){
+
+            if(it.id != -1){
+                System.out.println("fulll box" + it.itemTemplate.id);
                 curentBox += 1;
             }
         }
@@ -134,6 +156,7 @@ public class Inventory {
                 return addItemList(itemsBag, item);
         }
     }
+
     
     public Item eatMagicTree(){
         int index = 0;
@@ -467,6 +490,16 @@ public class Inventory {
         }
         return -1;
     }
+    public byte getIndexLuckyBoxid(final int id) {
+        for (byte i = 0; i < this.itemsLuckyBox.size(); ++i) {
+            final ItemLucky item = this.itemsLuckyBox.get(i);
+            if (item.id !=-1 && item.itemTemplate.id == id) {
+                System.out.println(item.itemTemplate.id);
+                return i;
+            }
+        }
+        return -1;
+    }
     public byte getBoxNull() {
         byte num = 0;
         for (byte i = 0; i < this.itemsBox.size(); ++i) {
@@ -480,6 +513,17 @@ public class Inventory {
     protected byte getIndexBoxNotItem() {
         for (byte i = 0; i < itemsBox.size(); ++i) {
             final Item item = itemsBox.get(i);
+            if (item.id == -1) {
+                System.out.println(i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    protected byte getIndexLuckBoxNotItem() {
+        for (byte i = 0; i < itemsLuckyBox.size(); ++i) {
+            final ItemLucky item = itemsLuckyBox.get(i);
             if (item.id == -1) {
                 System.out.println(i);
                 return i;
@@ -502,18 +546,7 @@ public class Inventory {
     }
     public void itemBagToBox(int index) {
         Item item = itemsBag.get(index);
-//        System.out.println(item.template.id);
-//        System.out.println("item trong bag" + itemsBag.get(index).id);
-//        for (byte i = 0; i < itemsBox.size(); ++i) {
-//            final Item item = itemsBox.get(i);
-//            System.out.println("item trong ruong =>>"+item.id);
-//
-//            if (item.id !=-1 && item.template.id == itemsBag.get(index).template.id) {
-//                System.out.println(item.template.id);
-//                return ;
-//            }
-//        }
-//        return ;
+
         if (item != null) {
             byte indexBox = getIndexBoxid(item.template.id);
             System.out.println("indexBox====>" + indexBox);
@@ -542,6 +575,31 @@ public class Inventory {
         }
 //
         }
+
+    public void itemToLuckyBox(ItemLucky item) {
+
+
+        if (item != null) {
+            byte indexBox = getIndexLuckyBoxid(item.itemTemplate.id);
+            System.out.println("indexBox====>" + indexBox);
+//            System.out.println(isItemIncremental(item));
+
+                if (getFullLuckyBox()==true) {
+                    Service.getInstance().sendThongBao(player,"Rương phụ không đủ chỗ trống");
+                    return;
+                }
+                indexBox = getIndexLuckBoxNotItem();
+            System.out.println("index k co item" + indexBox);
+//                removeItemBag(index);
+                itemsLuckyBox.add(indexBox,new ItemLucky(item));
+
+//                item.quantity = item.quantitytemp;
+
+
+
+        }
+//
+    }
     public byte getIndexBagid(int id) {
         byte i;
         Item item;
