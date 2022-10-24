@@ -16,8 +16,8 @@ public class testts  extends  JFrame{
     private JPanel jPanelMain;
     int index;
     private List<Item> listItem=new ArrayList<>();
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
+    private JComboBox cboItem;
+    private JComboBox cboOption;
     private JTextField textField1;
     private List<ItemTemplate> itemTemplates;
     private List<ItemOptionTemplate> itemOptionTemplates;
@@ -27,6 +27,7 @@ public class testts  extends  JFrame{
     private JButton addParamsButton;
     private JButton btncreate;
     private JButton btnRemove;
+    private JButton button1;
     private DefaultTableModel model;
 public  testts(){
     this.index=-1;
@@ -39,9 +40,9 @@ public  testts(){
     table1.setModel(model);
 
     init();
-    this.comboBox1.addActionListener(new ActionListener() {
+    this.cboItem.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent ae) {
-            testts.this.loadImageItem((testts.this.itemTemplates.get(testts.this.comboBox1.getSelectedIndex())).iconID);
+            testts.this.loadImageItem((testts.this.itemTemplates.get(testts.this.cboItem.getSelectedIndex())).iconID);
         }
     });
     addParamsButton.addActionListener(new ActionListener() {
@@ -71,10 +72,10 @@ public  testts(){
 
         this.itemOptionTemplates = ItemOptionTemplateDAO.getAll();
         for (ItemOptionTemplate iot : this.itemOptionTemplates) {
-            this.comboBox2.addItem(iot.id + " - " + iot.name);
+            this.cboOption.addItem(iot.id + " - " + iot.name);
         }
         for (ItemTemplate it : this.itemTemplates) {
-            this.comboBox1.addItem(it.id + " - " + it.name + " (" + it.description + ")");
+            this.cboItem.addItem(it.id + " - " + it.name + " (" + it.description + ")");
         }
     }
 
@@ -98,7 +99,7 @@ public  testts(){
 
     private void jButton1ActionPerformed(ActionEvent evt) {
         Item item = new Item();
-        ItemTemplate temp = this.itemTemplates.get(this.comboBox1.getSelectedIndex());
+        ItemTemplate temp = this.itemTemplates.get(this.cboItem.getSelectedIndex());
         item.template = new ItemTemplate(temp.id, temp.type, temp.gender, temp.name, temp.description, temp.iconID, temp.part, temp.isUpToUp, temp.strRequire);
 
         ItemOption op = new ItemOption();
@@ -106,7 +107,7 @@ public  testts(){
             int param = Integer.parseInt(this.textField1.getText());
             if (param >= 0) {
 
-                op.optionTemplate = new ItemOptionTemplate(((ItemOptionTemplate) this.itemOptionTemplates.get(this.comboBox2.getSelectedIndex())).id, ((ItemOptionTemplate) this.itemOptionTemplates.get(this.comboBox2.getSelectedIndex())).name,0);
+                op.optionTemplate = new ItemOptionTemplate(((ItemOptionTemplate) this.itemOptionTemplates.get(this.cboOption.getSelectedIndex())).id, ((ItemOptionTemplate) this.itemOptionTemplates.get(this.cboOption.getSelectedIndex())).name,0);
                 op.param = (short) param;
 //                ((Item) this.listItem.get(this.index)).itemOptions.add(op);
 

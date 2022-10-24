@@ -19,7 +19,7 @@ public class DBService {
     public Connection getConnection() {
         try {
             if (conn == null || conn.isClosed()) {
-                String url = "jdbc:mysql://127.0.0.1/new?useUnicode=true&characterEncoding=utf-8";
+                String url = "jdbc:mysql://127.0.0.1/nro_news?useUnicode=true&characterEncoding=utf-8";
                 String user = "root";
                 String password = "";
                 conn = DriverManager.getConnection(url, user, password);

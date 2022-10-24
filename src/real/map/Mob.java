@@ -190,7 +190,7 @@ public class Mob {
                 if (pl.inventory.gold > Inventory.LIMIT_GOLD) {
                     pl.inventory.gold = Inventory.LIMIT_GOLD;
                 }
-            } if (  randomQua>=50 && pl.map.isMapSKH()) {
+            } if (  randomQua>=20 && pl.map.isMapSKH()) {
                 int items = 1;
                 msg.writer().writeByte(items); //sl item roi
                 for (int i = 0; i < items; i++) {

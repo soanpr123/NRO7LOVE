@@ -342,11 +342,11 @@ public class Player {
 
     //--------------------------------------------------------------------------
     public synchronized int injured(Player plAtt, int hp, boolean piercing, boolean... die) {
-        if(this.typeBoss == 1){
-            if(hp > 60000){
-                hp = 60000;
-            }
-        }
+//        if(this.typeBoss == 1){
+//            if(hp > 60000){
+//                hp = 60000;
+//            }
+//        }
         
         if (!piercing && playerSkill.isShielding) {
             if (hp > point.getHPFull()) {
