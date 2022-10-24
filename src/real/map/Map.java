@@ -220,4 +220,7 @@ public class Map implements Runnable {
         }
         return rY;
     }
+    public boolean isMapSKH() {
+        return (this.id == 1 || this.id == 2 || this.id == 3 || this.id == 8 || this.id == 9 || this.id == 10 || this.id == 15 || this.id == 16 || this.id == 17);
+    }
 }

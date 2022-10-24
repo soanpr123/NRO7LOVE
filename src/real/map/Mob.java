@@ -190,7 +190,41 @@ public class Mob {
                 if (pl.inventory.gold > Inventory.LIMIT_GOLD) {
                     pl.inventory.gold = Inventory.LIMIT_GOLD;
                 }
-            }  if (randomQua >= 90) { // set ntn để khỏi rơi đồ á.
+            } if (  randomQua>=50 && pl.map.isMapSKH()) {
+                int items = 1;
+                msg.writer().writeByte(items); //sl item roi
+                for (int i = 0; i < items; i++) {
+                    int randomItem = Util.nextInt(0, Mob_ItemDAO.itemList_SKH_idItem[pl.gender].length);
+                    short idItem = (short) Mob_ItemDAO.itemList_SKH_idItem[pl.gender][randomItem];
+                    int optionItem = Mob_ItemDAO.itemList_SKH_Optione[pl.gender][randomItem];
+                    int paramOption =  Mob_ItemDAO.itemList_SKH_maxValue[pl.gender][randomItem];
+                    int paramOption_Random = Util.nextInt(Math.round(paramOption / 2), paramOption);
+                    paramOption_Random = paramOption_Random == 0 ? 1 : paramOption_Random;
+                    ItemMap itemMap = new ItemMap(pl.map, ItemData.getTemplate(idItem), 1, this.pointX + ((i % 2 == 0) ? (-i * 3) : (+i * 3)), this.map.yPhysic(this.pointX, this.pointY), (int) pl.id);
+                    System.out.println("item: " + itemMap.itemTemplate.name + " - " + idItem + " - " + optionItem + " - "+paramOption_Random);
+                    List<ItemOption> options = new ArrayList<>();
+                    int ops = 1;
+                    for (int j = 0; j < ops; j++) {
+                        options.add(new ItemOption(optionItem, (short) paramOption_Random));
+                    }
+                    int randomOptions = Util.nextInt(0, Mob_ItemDAO.itemList_SKH_Optione_Name[pl.gender].length);
+                    int optionSHKName = Mob_ItemDAO.itemList_SKH_Optione_Name[pl.gender][randomOptions];
+                    int optionSHKValue = Mob_ItemDAO.itemList_SKH_Optione_Value[pl.gender][randomOptions];
+                    options.add(new ItemOption(optionSHKName, (short) 1));
+                    options.add(new ItemOption(optionSHKValue, (short) 1));
+                    itemMap.options = options;
+                    itemMap.playerId = Math.abs(pl.id);
+                    pl.map.addItem(itemMap);
+
+                    msg.writer().writeShort(itemMap.itemMapId);// itemmapid
+                    msg.writer().writeShort(itemMap.itemTemplate.id); // id item
+                    msg.writer().writeShort(itemMap.x); // xend item
+                    msg.writer().writeShort(itemMap.y); // yend item
+                    msg.writer().writeInt((int) itemMap.playerId); // id nhan nat
+
+
+                }
+            } if (randomQua >= 90) { // set ntn để khỏi rơi đồ á.
                 int items = 1;
                 msg.writer().writeByte(items); //sl item roi
                 for (int i = 0; i < items; i++) {
