@@ -44,7 +44,7 @@ public class ServerManager {
         SkillData.loadSkill();
         ItemData.loadDataItems();
         Mob_ItemDAO.getItemRoi();
-        luckyItemDAO.getItemRoi();
+//        luckyItemDAO.getItemRoi();
         //OnloadDB.active(5000, 5000);
         BoMongDAO.active(10000, 10000);
         this.controller = new Controller();

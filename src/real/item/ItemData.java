@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import real.func.Shop;
+import real.lucky.Lucky;
 import server.Service;
 import server.Util;
 import server.io.Message;
@@ -28,6 +29,19 @@ public class ItemData {
         return itemTemplates.get(id);
     }
 
+    public static ItemTemplate getTemplateByID(int id) {
+
+        for(ItemTemplate it:itemTemplates){
+
+            if(it.id==id){
+
+                System.out.println("Da thay");
+                return  it;
+            }
+        }
+        return null;
+    }
+
     public static short getPart(short itemTemplateID) {
         return getTemplate(itemTemplateID).part;
     }
@@ -42,7 +56,11 @@ public class ItemData {
         itemOptionTemplates = ItemOptionTemplateDAO.getAll();
         Util.log("Tải item option template thành công! (" + itemOptionTemplates.size() + ")");
         Shop.gI().itemShops = (Map) ItemShopDAO.loadItemShop();
+
+
         Util.log("Tải dữ liệu cửa hàng thành công! (" + Shop.gI().itemShops.size() + ")");
+        Lucky.gI().itemLuckies=ItemLuckyDAO.loadItemShop();
+        Util.log("Tải dữ liệu vòng quay thành công! (" + Lucky.gI().itemLuckies.size() + ")");
 //       itemLocky=ItemLuckyDAO.loadItemLucky();
 //        Util.log("Tải dữ liệu Rương phụ thành công! (" + itemLocky.size() + ")");
 

@@ -24,6 +24,8 @@ public class CaiTrangData {
         for (CaiTrang ct : caiTrangs) {
             if (ct.tempId == tempId) {
                 return ct;
+            }else {
+                return  null;
             }
         }
         return null;

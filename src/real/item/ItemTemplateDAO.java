@@ -29,6 +29,7 @@ public class ItemTemplateDAO {
                 list.add(new ItemTemplate(rs.getShort(1), rs.getByte(2),
                         rs.getByte(3), rs.getString(4), rs.getString(5), rs.getShort(6), rs.getShort(7), rs.getInt(8) == 1, rs.getInt(9)));
             }
+
             rs.close();
             ps.close();
         } catch (Exception e) {

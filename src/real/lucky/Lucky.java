@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Lucky {
      public    boolean isDone=true;
-
+        public List<real.item.ItemLucky> itemLuckies=new ArrayList<>();
     private static Lucky instance;
 
     private Lucky() {

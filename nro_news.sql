@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 23, 2022 lúc 02:42 PM
--- Phiên bản máy phục vụ: 10.4.25-MariaDB
--- Phiên bản PHP: 7.4.30
+-- Máy chủ: localhost
+-- Thời gian đã tạo: Th10 24, 2022 lúc 01:05 PM
+-- Phiên bản máy phục vụ: 10.4.21-MariaDB
+-- Phiên bản PHP: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `new`
+-- Cơ sở dữ liệu: `nro_news`
 --
 
 -- --------------------------------------------------------
@@ -48,7 +48,9 @@ INSERT INTO `account` (`id`, `username`, `password`, `role`, `phone`, `create_ti
 (1, '1', '1', -1, '', '2022-10-23 02:30:16', '2022-10-23 02:30:16', 0, 0, 0),
 (2, '2', '2', -1, '', '2022-10-23 02:49:19', '2022-10-23 02:49:19', 0, 0, 0),
 (3, '3', '1', -1, '', '2022-10-23 02:57:10', '2022-10-23 02:57:10', 0, 0, 0),
-(4, '5', '1', -1, '', '2022-10-23 05:21:01', '2022-10-23 05:21:01', 0, 0, 0);
+(4, '5', '1', -1, '', '2022-10-23 05:21:01', '2022-10-23 05:21:01', 0, 0, 0),
+(5, '7', '1', -1, '', '2022-10-24 10:11:36', '2022-10-24 10:11:36', 0, 0, 0),
+(6, '6', '1', -1, '', '2022-10-24 10:17:28', '2022-10-24 10:17:28', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -497,7 +499,9 @@ INSERT INTO `dau_than` (`player_id`, `level_tree`, `quantity`, `time_update`, `i
 (16, 1, 5, 1666492318, 0),
 (17, 1, 5, 1666493465, 0),
 (18, 1, 5, 1666493989, 0),
-(19, 1, 5, 1666502536, 0);
+(19, 1, 5, 1666502536, 0),
+(20, 1, 5, 1666606382, 0),
+(21, 1, 5, 1666606720, 0);
 
 -- --------------------------------------------------------
 
@@ -1007,7 +1011,18 @@ INSERT INTO `item` (`id`, `temp_id`, `quantity`, `create_time`) VALUES
 (407, 457, 1, '2022-10-23 12:38:08'),
 (408, 517, 1, '2022-10-23 12:38:11'),
 (409, 518, 1, '2022-10-23 12:38:14'),
-(410, 528, 1, '2022-10-23 12:39:48');
+(410, 528, 1, '2022-10-23 12:39:48'),
+(411, 986, 1, '2022-10-24 10:08:32'),
+(412, 194, 1, '2022-10-24 10:12:20'),
+(413, 986, 1, '2022-10-24 10:12:55'),
+(414, 878, 1, '2022-10-24 10:13:22'),
+(415, 406, 1, '2022-10-24 10:13:48'),
+(416, 314, 1, '2022-10-24 10:15:56'),
+(417, 194, 1, '2022-10-24 10:17:53'),
+(418, 878, 1, '2022-10-24 10:18:18'),
+(419, 933, 1, '2022-10-24 10:18:40'),
+(420, 525, 1, '2022-10-24 10:18:50'),
+(421, 578, 1, '2022-10-24 10:18:58');
 
 -- --------------------------------------------------------
 
@@ -1018,21 +1033,38 @@ INSERT INTO `item` (`id`, `temp_id`, `quantity`, `create_time`) VALUES
 CREATE TABLE `item_lucky_round` (
   `id` int(11) NOT NULL,
   `item_template_id` int(11) NOT NULL,
-  `tab` int(11) NOT NULL DEFAULT 0,
-  `item_new` tinyint(1) NOT NULL DEFAULT 0,
-  `sell` tinyint(1) NOT NULL DEFAULT 1,
-  `gold` int(11) NOT NULL,
-  `gem` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 1,
-  `reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
-  `power_require` bigint(20) DEFAULT NULL,
-  `item_id` int(11) DEFAULT NULL,
-  `buy_type` int(11) DEFAULT NULL,
-  `is_me` tinyint(1) DEFAULT 0,
-  `icon_spec` int(11) DEFAULT NULL,
-  `buy_spec` int(11) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+  `isItemNew` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT 1,
+  `reasion` varchar(1000) DEFAULT NULL,
+  `power_require` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `item_lucky_round`
+--
+
+INSERT INTO `item_lucky_round` (`id`, `item_template_id`, `isItemNew`, `quantity`, `reasion`, `power_require`) VALUES
+(28, 965, 0, 1, '', 1),
+(29, 964, 0, 1, '', 1),
+(30, 447, 0, 1, '', 1),
+(31, 446, 0, 1, '', 1),
+(32, 445, 0, 1, '', 1),
+(33, 444, 0, 1, '', 1),
+(34, 443, 0, 1, '', 1),
+(35, 442, 0, 1, '', 1),
+(36, 441, 0, 1, '', 1),
+(37, 560, 0, 1, '', 0),
+(38, 558, 0, 1, '', 0),
+(39, 556, 0, 1, '', 0),
+(40, 651, 0, 1, '', 0),
+(41, 1022, 0, 1, '', 0),
+(42, 16, 0, 1, '', 0),
+(43, 653, 0, 1, '', 0),
+(44, 946, 0, 1, '', 0),
+(45, 941, 0, 1, '', 0),
+(46, 388, 0, 1, '', 0),
+(47, 391, 0, 1, '', 0),
+(48, 394, 0, 1, '', 0);
 
 -- --------------------------------------------------------
 
@@ -1602,13 +1634,42 @@ INSERT INTO `item_option` (`item_id`, `option_id`, `param`) VALUES
 (406, 100, 1),
 (407, 86, 0),
 (407, 100, 1),
+(413, 73, 0),
+(415, 50, 11),
+(412, 73, 0),
+(416, 49, 109),
+(416, 77, 40),
+(414, 50, 23),
+(414, 93, 30),
+(414, 103, 19),
+(414, 106, 0),
+(414, 154, 0),
+(414, 178, 3),
+(414, 179, 1),
+(418, 50, 23),
+(418, 93, 30),
+(418, 103, 19),
+(418, 106, 0),
+(418, 154, 0),
+(418, 178, 3),
+(418, 179, 1),
+(417, 73, 0),
+(419, 30, 0),
+(419, 31, 10),
+(420, 3, 100),
+(420, 4, 2),
+(420, 5, 15),
+(421, 29, 0),
+(421, 50, 22),
+(421, 77, 19),
+(421, 103, 19),
 (360, 73, 0),
 (408, 73, 0),
-(409, 73, 0),
 (410, 8, 3),
 (410, 50, 18),
 (410, 77, 15),
 (410, 103, 15),
+(411, 73, 0),
 (375, 6, 17528),
 (376, 6, 1166),
 (377, 28, 701),
@@ -1623,12 +1684,48 @@ INSERT INTO `item_option` (`item_id`, `option_id`, `param`) VALUES
 --
 
 CREATE TABLE `item_option_lucky` (
-  `id` int(11) NOT NULL,
   `item_template_id` int(11) NOT NULL,
   `option_id` int(11) NOT NULL,
-  `param` int(11) NOT NULL,
-  `tab` int(11) NOT NULL
+  `param` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Đang đổ dữ liệu cho bảng `item_option_lucky`
+--
+
+INSERT INTO `item_option_lucky` (`item_template_id`, `option_id`, `param`) VALUES
+(965, 73, 0),
+(964, 73, 0),
+(447, 73, 0),
+(446, 73, 0),
+(445, 73, 0),
+(444, 73, 0),
+(443, 73, 0),
+(442, 73, 0),
+(441, 73, 0),
+(560, 73, 0),
+(560, 6, 24464),
+(558, 73, 0),
+(558, 6, 24464),
+(556, 73, 0),
+(556, 6, 24464),
+(651, 73, 0),
+(651, 6, 24464),
+(1022, 73, 0),
+(1022, 0, 199),
+(16, 73, 0),
+(653, 73, 0),
+(653, 0, 24464),
+(946, 73, 0),
+(946, 0, 24464),
+(941, 73, 0),
+(941, 0, 24464),
+(388, 73, 0),
+(388, 0, 24464),
+(391, 73, 0),
+(391, 0, 24464),
+(394, 73, 0),
+(394, 0, 24464);
 
 -- --------------------------------------------------------
 
@@ -3196,7 +3293,8 @@ INSERT INTO `item_shop` (`npc_id`, `item_template_id`, `type_shop`, `tab`, `tab_
 (39, 878, 0, 0, 'Cửa\nhàng', 1, 1, 0, 299, 1, '', 0, NULL, 0, 0, -1, -1, '2022-04-24 19:47:03'),
 (39, 879, 0, 0, 'Cửa\nhàng', 1, 1, 0, 299, 1, '', 0, NULL, 0, 0, -1, -1, '2022-04-24 19:47:02'),
 (39, 933, 0, 1, 'Đặc\nbiệt', 1, 1, 0, 50, 1, '', 0, NULL, 0, 0, -1, -1, '2022-04-24 19:47:05'),
-(39, 935, 0, 1, 'Đặc\nbiệt', 1, 1, 0, 150, 1, '', 0, NULL, 0, 0, -1, -1, '2022-04-24 19:47:04');
+(39, 935, 0, 1, 'Đặc\nbiệt', 1, 1, 0, 150, 1, '', 0, NULL, 0, 0, -1, -1, '2022-04-24 19:47:04'),
+(39, 986, 0, 0, 'Cửa\r\nhàng', 0, 1, 0, 1999, 1, '', 0, NULL, 0, 0, -1, -1, '2022-10-24 10:02:38');
 
 -- --------------------------------------------------------
 
@@ -7145,7 +7243,9 @@ INSERT INTO `player` (`id`, `account_id`, `name`, `power`, `vang`, `luong`, `luo
 (16, 1, '11111', 1200, 1999999500, 99000, 0, -1, 0, 28, 2, 45, 437, 408, '2022-10-23 02:30:58', '2022-10-23 02:49:51', '2022-10-23 02:30:58', '[]'),
 (17, 2, 'eqw121', 1200, 2000000000, 99000, 0, -1, 0, 31, 0, 45, 416, 408, '2022-10-23 02:50:05', '2022-10-23 02:50:48', '2022-10-23 02:50:05', '[]'),
 (18, 3, 'ffffffff', 1200, 2000000000, 100000, 0, -1, 0, 30, 0, 45, 428, 408, '2022-10-23 02:57:26', '2022-10-23 03:24:25', '2022-10-23 02:57:26', '[]'),
-(19, 4, 'dbnnnnnnn', 1200, 2000000000, 96900, 0, 5, 0, 30, 0, 5, 851, 408, '2022-10-23 05:21:16', '2022-10-23 12:40:24', '2022-10-23 05:21:16', '[]');
+(19, 4, 'dbnnnnnnn', 1200, 2000000000, 94901, 0, 5, 0, 30, 0, 5, 1247, 408, '2022-10-23 05:21:16', '2022-10-24 10:22:09', '2022-10-23 05:21:16', '[]'),
+(20, 5, '5555555', 1200, 2000000000, 95502, 0, -1, 0, 27, 2, 26, 339, 336, '2022-10-24 10:12:02', '2022-10-24 10:17:12', '2022-10-24 10:12:02', '[]'),
+(21, 6, 'rrrrrrr', 1200, 2000000000, 95151, 0, -1, 0, 30, 0, 5, 1172, 408, '2022-10-24 10:17:40', '2022-10-24 10:22:09', '2022-10-24 10:17:40', '[]');
 
 -- --------------------------------------------------------
 
@@ -7228,7 +7328,7 @@ INSERT INTO `player_bag` (`player_id`, `item_id`, `slot`) VALUES
 (19, 408, 1),
 (19, 409, 2),
 (19, 410, 3),
-(19, NULL, 4),
+(19, 411, 4),
 (19, NULL, 5),
 (19, NULL, 6),
 (19, NULL, 7),
@@ -7243,7 +7343,47 @@ INSERT INTO `player_bag` (`player_id`, `item_id`, `slot`) VALUES
 (19, NULL, 16),
 (19, NULL, 17),
 (19, NULL, 18),
-(19, NULL, 19);
+(19, NULL, 19),
+(20, 412, 0),
+(20, 416, 1),
+(20, 414, 2),
+(20, NULL, 3),
+(20, NULL, 4),
+(20, NULL, 5),
+(20, NULL, 6),
+(20, NULL, 7),
+(20, NULL, 8),
+(20, NULL, 9),
+(20, NULL, 10),
+(20, NULL, 11),
+(20, NULL, 12),
+(20, NULL, 13),
+(20, NULL, 14),
+(20, NULL, 15),
+(20, NULL, 16),
+(20, NULL, 17),
+(20, NULL, 18),
+(20, NULL, 19),
+(21, 417, 0),
+(21, 419, 1),
+(21, 420, 2),
+(21, 421, 3),
+(21, NULL, 4),
+(21, NULL, 5),
+(21, NULL, 6),
+(21, NULL, 7),
+(21, NULL, 8),
+(21, NULL, 9),
+(21, NULL, 10),
+(21, NULL, 11),
+(21, NULL, 12),
+(21, NULL, 13),
+(21, NULL, 14),
+(21, NULL, 15),
+(21, NULL, 16),
+(21, NULL, 17),
+(21, NULL, 18),
+(21, NULL, 19);
 
 -- --------------------------------------------------------
 
@@ -7289,7 +7429,21 @@ INSERT INTO `player_body` (`player_id`, `item_id`, `slot`) VALUES
 (19, NULL, 3),
 (19, NULL, 4),
 (19, NULL, 5),
-(19, NULL, 6);
+(19, NULL, 6),
+(20, NULL, 0),
+(20, NULL, 1),
+(20, NULL, 2),
+(20, NULL, 3),
+(20, NULL, 4),
+(20, 415, 5),
+(20, NULL, 6),
+(21, NULL, 0),
+(21, NULL, 1),
+(21, NULL, 2),
+(21, NULL, 3),
+(21, NULL, 4),
+(21, 418, 5),
+(21, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -7387,7 +7541,47 @@ INSERT INTO `player_box` (`player_id`, `item_id`, `slot`) VALUES
 (19, NULL, 16),
 (19, NULL, 17),
 (19, NULL, 18),
-(19, NULL, 19);
+(19, NULL, 19),
+(20, NULL, 0),
+(20, NULL, 1),
+(20, NULL, 2),
+(20, NULL, 3),
+(20, NULL, 4),
+(20, NULL, 5),
+(20, NULL, 6),
+(20, NULL, 7),
+(20, NULL, 8),
+(20, NULL, 9),
+(20, NULL, 10),
+(20, NULL, 11),
+(20, NULL, 12),
+(20, NULL, 13),
+(20, NULL, 14),
+(20, NULL, 15),
+(20, NULL, 16),
+(20, NULL, 17),
+(20, NULL, 18),
+(20, NULL, 19),
+(21, NULL, 0),
+(21, NULL, 1),
+(21, NULL, 2),
+(21, NULL, 3),
+(21, NULL, 4),
+(21, NULL, 5),
+(21, NULL, 6),
+(21, NULL, 7),
+(21, NULL, 8),
+(21, NULL, 9),
+(21, NULL, 10),
+(21, NULL, 11),
+(21, NULL, 12),
+(21, NULL, 13),
+(21, NULL, 14),
+(21, NULL, 15),
+(21, NULL, 16),
+(21, NULL, 17),
+(21, NULL, 18),
+(21, NULL, 19);
 
 -- --------------------------------------------------------
 
@@ -7410,7 +7604,9 @@ INSERT INTO `player_info` (`player_id`, `head`, `body`, `leg`) VALUES
 (16, 28, 57, 58),
 (17, 31, 57, 58),
 (18, 30, 57, 58),
-(19, 30, 57, 58);
+(19, 30, 57, 58),
+(20, 27, 57, 58),
+(21, 30, 57, 58);
 
 -- --------------------------------------------------------
 
@@ -7892,7 +8088,239 @@ INSERT INTO `player_lucky_box` (`player_id`, `item_id`, `slot`) VALUES
 (19, NULL, 112),
 (19, NULL, 113),
 (19, NULL, 114),
-(19, NULL, 115);
+(19, NULL, 115),
+(20, NULL, 0),
+(20, NULL, 1),
+(20, NULL, 2),
+(20, NULL, 3),
+(20, NULL, 4),
+(20, NULL, 5),
+(20, NULL, 6),
+(20, NULL, 7),
+(20, NULL, 8),
+(20, NULL, 9),
+(20, NULL, 10),
+(20, NULL, 11),
+(20, NULL, 12),
+(20, NULL, 13),
+(20, NULL, 14),
+(20, NULL, 15),
+(20, NULL, 16),
+(20, NULL, 17),
+(20, NULL, 18),
+(20, NULL, 19),
+(20, NULL, 20),
+(20, NULL, 21),
+(20, NULL, 22),
+(20, NULL, 23),
+(20, NULL, 24),
+(20, NULL, 25),
+(20, NULL, 26),
+(20, NULL, 27),
+(20, NULL, 28),
+(20, NULL, 29),
+(20, NULL, 30),
+(20, NULL, 31),
+(20, NULL, 32),
+(20, NULL, 33),
+(20, NULL, 34),
+(20, NULL, 35),
+(20, NULL, 36),
+(20, NULL, 37),
+(20, NULL, 38),
+(20, NULL, 39),
+(20, NULL, 40),
+(20, NULL, 41),
+(20, NULL, 42),
+(20, NULL, 43),
+(20, NULL, 44),
+(20, NULL, 45),
+(20, NULL, 46),
+(20, NULL, 47),
+(20, NULL, 48),
+(20, NULL, 49),
+(20, NULL, 50),
+(20, NULL, 51),
+(20, NULL, 52),
+(20, NULL, 53),
+(20, NULL, 54),
+(20, NULL, 55),
+(20, NULL, 56),
+(20, NULL, 57),
+(20, NULL, 58),
+(20, NULL, 59),
+(20, NULL, 60),
+(20, NULL, 61),
+(20, NULL, 62),
+(20, NULL, 63),
+(20, NULL, 64),
+(20, NULL, 65),
+(20, NULL, 66),
+(20, NULL, 67),
+(20, NULL, 68),
+(20, NULL, 69),
+(20, NULL, 70),
+(20, NULL, 71),
+(20, NULL, 72),
+(20, NULL, 73),
+(20, NULL, 74),
+(20, NULL, 75),
+(20, NULL, 76),
+(20, NULL, 77),
+(20, NULL, 78),
+(20, NULL, 79),
+(20, NULL, 80),
+(20, NULL, 81),
+(20, NULL, 82),
+(20, NULL, 83),
+(20, NULL, 84),
+(20, NULL, 85),
+(20, NULL, 86),
+(20, NULL, 87),
+(20, NULL, 88),
+(20, NULL, 89),
+(20, NULL, 90),
+(20, NULL, 91),
+(20, NULL, 92),
+(20, NULL, 93),
+(20, NULL, 94),
+(20, NULL, 95),
+(20, NULL, 96),
+(20, NULL, 97),
+(20, NULL, 98),
+(20, NULL, 99),
+(20, NULL, 100),
+(20, NULL, 101),
+(20, NULL, 102),
+(20, NULL, 103),
+(20, NULL, 104),
+(20, NULL, 105),
+(20, NULL, 106),
+(20, NULL, 107),
+(20, NULL, 108),
+(20, NULL, 109),
+(20, NULL, 110),
+(20, NULL, 111),
+(20, NULL, 112),
+(20, NULL, 113),
+(20, NULL, 114),
+(20, NULL, 115),
+(21, NULL, 0),
+(21, NULL, 1),
+(21, NULL, 2),
+(21, NULL, 3),
+(21, NULL, 4),
+(21, NULL, 5),
+(21, NULL, 6),
+(21, NULL, 7),
+(21, NULL, 8),
+(21, NULL, 9),
+(21, NULL, 10),
+(21, NULL, 11),
+(21, NULL, 12),
+(21, NULL, 13),
+(21, NULL, 14),
+(21, NULL, 15),
+(21, NULL, 16),
+(21, NULL, 17),
+(21, NULL, 18),
+(21, NULL, 19),
+(21, NULL, 20),
+(21, NULL, 21),
+(21, NULL, 22),
+(21, NULL, 23),
+(21, NULL, 24),
+(21, NULL, 25),
+(21, NULL, 26),
+(21, NULL, 27),
+(21, NULL, 28),
+(21, NULL, 29),
+(21, NULL, 30),
+(21, NULL, 31),
+(21, NULL, 32),
+(21, NULL, 33),
+(21, NULL, 34),
+(21, NULL, 35),
+(21, NULL, 36),
+(21, NULL, 37),
+(21, NULL, 38),
+(21, NULL, 39),
+(21, NULL, 40),
+(21, NULL, 41),
+(21, NULL, 42),
+(21, NULL, 43),
+(21, NULL, 44),
+(21, NULL, 45),
+(21, NULL, 46),
+(21, NULL, 47),
+(21, NULL, 48),
+(21, NULL, 49),
+(21, NULL, 50),
+(21, NULL, 51),
+(21, NULL, 52),
+(21, NULL, 53),
+(21, NULL, 54),
+(21, NULL, 55),
+(21, NULL, 56),
+(21, NULL, 57),
+(21, NULL, 58),
+(21, NULL, 59),
+(21, NULL, 60),
+(21, NULL, 61),
+(21, NULL, 62),
+(21, NULL, 63),
+(21, NULL, 64),
+(21, NULL, 65),
+(21, NULL, 66),
+(21, NULL, 67),
+(21, NULL, 68),
+(21, NULL, 69),
+(21, NULL, 70),
+(21, NULL, 71),
+(21, NULL, 72),
+(21, NULL, 73),
+(21, NULL, 74),
+(21, NULL, 75),
+(21, NULL, 76),
+(21, NULL, 77),
+(21, NULL, 78),
+(21, NULL, 79),
+(21, NULL, 80),
+(21, NULL, 81),
+(21, NULL, 82),
+(21, NULL, 83),
+(21, NULL, 84),
+(21, NULL, 85),
+(21, NULL, 86),
+(21, NULL, 87),
+(21, NULL, 88),
+(21, NULL, 89),
+(21, NULL, 90),
+(21, NULL, 91),
+(21, NULL, 92),
+(21, NULL, 93),
+(21, NULL, 94),
+(21, NULL, 95),
+(21, NULL, 96),
+(21, NULL, 97),
+(21, NULL, 98),
+(21, NULL, 99),
+(21, NULL, 100),
+(21, NULL, 101),
+(21, NULL, 102),
+(21, NULL, 103),
+(21, NULL, 104),
+(21, NULL, 105),
+(21, NULL, 106),
+(21, NULL, 107),
+(21, NULL, 108),
+(21, NULL, 109),
+(21, NULL, 110),
+(21, NULL, 111),
+(21, NULL, 112),
+(21, NULL, 113),
+(21, NULL, 114),
+(21, NULL, 115);
 
 -- --------------------------------------------------------
 
@@ -7922,7 +8350,9 @@ INSERT INTO `player_point` (`player_id`, `hp`, `hp_goc`, `mp`, `mp_goc`, `dam_go
 (16, 100, 100, 85, 100, 15, 0, 0, 0, 1200, 0),
 (17, 100, 100, 89, 100, 15, 0, 0, 0, 1200, 0),
 (18, 64, 100, 78, 100, 15, 0, 0, 0, 1200, 0),
-(19, 100, 100, 51, 100, 15, 0, 0, 0, 1200, 0);
+(19, 100, 100, 51, 100, 15, 0, 0, 0, 1200, 0),
+(20, 100, 100, 116, 100, 15, 0, 0, 0, 1200, 0),
+(21, 100, 100, 92, 100, 15, 0, 0, 0, 1200, 0);
 
 -- --------------------------------------------------------
 
@@ -7945,7 +8375,9 @@ INSERT INTO `player_skill` (`id`, `player_id`, `temp_id`, `level`) VALUES
 (12, 16, 4, 1),
 (21, 17, 0, 1),
 (31, 18, 0, 1),
-(47, 19, 0, 1);
+(58, 20, 4, 1),
+(68, 21, 0, 1),
+(69, 19, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -7983,7 +8415,9 @@ INSERT INTO `skill_shortcut` (`player_id`, `skill_1`, `skill_2`, `skill_3`, `ski
 (16, 4, -1, -1, -1, -1),
 (17, 0, -1, -1, -1, -1),
 (18, 0, -1, -1, -1, -1),
-(19, 0, -1, -1, -1, -1);
+(19, 0, -1, -1, -1, -1),
+(20, 4, -1, -1, -1, -1),
+(21, 0, -1, -1, -1, -1);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -8056,9 +8490,8 @@ ALTER TABLE `item`
 -- Chỉ mục cho bảng `item_lucky_round`
 --
 ALTER TABLE `item_lucky_round`
-  ADD PRIMARY KEY (`id`,`item_template_id`,`tab`) USING BTREE,
-  ADD KEY `item_template_id` (`item_template_id`) USING BTREE,
-  ADD KEY `item_id` (`item_id`) USING BTREE;
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `item_template_id` (`item_template_id`);
 
 --
 -- Chỉ mục cho bảng `item_option`
@@ -8070,9 +8503,7 @@ ALTER TABLE `item_option`
 -- Chỉ mục cho bảng `item_option_lucky`
 --
 ALTER TABLE `item_option_lucky`
-  ADD PRIMARY KEY (`id`,`item_template_id`,`option_id`,`tab`) USING BTREE,
-  ADD KEY `item_template_id` (`item_template_id`) USING BTREE,
-  ADD KEY `option_id` (`option_id`) USING BTREE;
+  ADD KEY `item_template_id` (`item_template_id`) USING BTREE;
 
 --
 -- Chỉ mục cho bảng `item_option_shop`
@@ -8219,7 +8650,7 @@ ALTER TABLE `skill_shortcut`
 -- AUTO_INCREMENT cho bảng `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `bo_mong`
@@ -8249,7 +8680,13 @@ ALTER TABLE `exception`
 -- AUTO_INCREMENT cho bảng `item`
 --
 ALTER TABLE `item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=411;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=422;
+
+--
+-- AUTO_INCREMENT cho bảng `item_lucky_round`
+--
+ALTER TABLE `item_lucky_round`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT cho bảng `map_boss`
@@ -8267,13 +8704,13 @@ ALTER TABLE `map_npc`
 -- AUTO_INCREMENT cho bảng `player`
 --
 ALTER TABLE `player`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT cho bảng `player_skill`
 --
 ALTER TABLE `player_skill`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

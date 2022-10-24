@@ -18,6 +18,7 @@ public class CreateRoundDB extends  JFrame {
     private JPanel jPmain;
     int index;
     private List<Item> listItem=new ArrayList<>();
+    List<ItemLucky> items=new ArrayList<>();
     private List<ItemTemplate> itemTemplates;
     private List<ItemOptionTemplate> itemOptionTemplates;
     private DefaultTableModel model;
@@ -52,6 +53,7 @@ public class CreateRoundDB extends  JFrame {
     setContentPane(jPmain);
 }
     private void init() {
+        fillToTableFromDB();
         btnAddParams.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,6 +72,19 @@ public class CreateRoundDB extends  JFrame {
                 CreateRoundDB.this.tblListMouseClicked(e);
             }
         });
+
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jButton3ActionPerformed(e);
+            }
+        });
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jButton4ActionPerformed(e);
+            }
+        });
         this.itemTemplates = ItemTemplateDAO.getAll();
         this.itemTemplates.sort((o1, o2) -> o1.name.compareToIgnoreCase(o2.name));
 
@@ -81,7 +96,32 @@ public class CreateRoundDB extends  JFrame {
             this.cboItem.addItem(it.id + " - " + it.name + " (" + it.description + ")");
         }
     }
+    private void jButton3ActionPerformed(ActionEvent evt) {
 
+
+           boolean succes= CreateRoundData.writeDb(this.listItem);
+
+           if(succes){
+               JOptionPane.showMessageDialog(this, "Successed!");
+           }else {
+               JOptionPane.showMessageDialog(this, "Fald!");
+           }
+
+    }
+    private void jButton4ActionPerformed(ActionEvent evt) {
+        if (this.index != -1) {
+
+              boolean success=  CreateRoundData.removeFromDB(this.listItem,this.index);
+              if(success){
+                  this.listItem.remove(this.index);
+                  fillToTable();
+                  JOptionPane.showMessageDialog(this, "done");
+              }else {
+                  JOptionPane.showMessageDialog(this, "error");
+              }
+
+        }
+    }
     private void loadImageItem(int iconId) {
         try {
             BufferedImage img = ImageIO.read(new File("data/res_icon_new/x4/" + iconId +".png"));
@@ -117,11 +157,43 @@ public class CreateRoundDB extends  JFrame {
     private void fillToTable() {
         this.model.setRowCount(0);
         for (int i = 0; i < this.listItem.size(); i++) {
+            this.index = i;
             this.model.addRow(new Object[]{
                     Integer.valueOf(i), ((Item) this.listItem.get(i)).template.name, 0, 0
             });
         }
-        this.index = -1;
+
+    }
+
+    private void fillToTableFromDB() {
+        CaiTrangData.loadCaiTrang();
+       ItemData.loadDataItems();
+       items=ItemLuckyDAO.loadItemShop();
+       for (ItemLucky it:items){
+           Item item = new Item();
+           System.out.println(it.itemTemplate.id);
+           ItemTemplate temp = ItemData.getTemplateByID(it.itemTemplate.id);
+
+          if(temp!=null){
+              System.out.println(temp.id);
+              item.template = new ItemTemplate(temp.id, temp.type, temp.gender, temp.name, temp.description, temp.iconID, temp.part, temp.isUpToUp, temp.strRequire);
+
+              ItemOption op = new ItemOption();
+              item.itemOptions = ItemOptionLuckyDAO.getOptions(it.itemTemplate.id);
+              this.listItem.add(item);
+              fillToTable();
+          }
+
+       }
+//        this.index = this.listItem.size() - 1;
+//        this.model.setRowCount(items.size());
+//        for (int i = 0; i < items.size(); i++) {
+//            this.model.addRow(new Object[]{
+//                    items.get(i).itemTemplate.id, items.get(i).itemTemplate.name, 0, 0
+//            });
+//
+//        }
+//        this.index =-1;
     }
 
     private void jButton2ActionPerformed(ActionEvent evt) {
